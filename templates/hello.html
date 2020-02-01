@@ -1,0 +1,170 @@
+<title>Hello!</title>
+
+
+<!--
+<p>
+    <input type="text" id="inputBox0" value="">
+    <input id="clickMe" type="button" value="Set cookie 0" onclick="clickCookie0();" />
+</p>
+-->
+ <!--
+<form action = "/getArticle" method = "POST">
+    <p>
+        Article Name<input type = 'text' name = 'searchName'/>
+    </p>
+    <p>
+        <input type = 'submit' value = 'Load Article'/>
+    </p>
+</form>
+
+
+<form action = "/saveRegex" method = "POST">
+    <p>
+        Saver Regex<input type = 'text' name = 'saveRegex'/>
+    </p>
+    <p>
+        <input type = 'submit' value = 'Save Regex'/>
+    </p>
+</form>
+
+<form action = "/loadRegex" method = "POST">
+    <p>
+        Saver Regex<input type = 'text' name = 'loadRegex'/>
+    </p>
+    <p>
+        <input type = 'submit' value = 'Load Regex'/>
+    </p>
+</form>
+
+<p>{{ foundSentences }}</p>
+-->
+
+<script type=text/javascript>
+    $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+  </script>
+
+<script type=text/javascript src="{{
+    url_for('static', filename='jquery.js') }}">
+</script>
+
+<script type=text/javascript>
+
+function seperateTextBySentences(text)
+{
+    var result = text.match( /[^\.!\?]+[\.!\?]+/g );
+    return result
+}
+function identifySentence(sentence)
+{
+    
+}
+
+function selectSentence(sentence)
+{
+    document.getElementById("selectedSentence").textContent = sentence; 
+    console.log(sentence);
+}
+
+function displayDocument(result)
+{
+    //console.log(result);
+    //var list = document.createElement("ul");
+    strs = seperateTextBySentences(result)
+    var list = document.getElementById("listAnchor");
+    for (var i in strs) 
+    {
+        var anchor = document.createElement("a");
+        anchor.href = "#";
+        anchor.innerText = strs[i];
+        anchor.id = "articleSentence" + i
+        anchor.onclick = function () 
+        {
+            var thisName = this.id;
+            var res = thisName.split("articleSentence")[1];
+            var resNum = parseInt(res);
+            selectSentence(strs[resNum]);
+        };
+
+        var elem = document.createElement("li");
+        elem.appendChild(anchor);
+        list.appendChild(elem);
+    }
+}
+    $(function() 
+    {
+      $('a#calculate').bind('click', function() 
+      {
+        $.getJSON($SCRIPT_ROOT + '/ajaxGetArticle', 
+        {
+          valArticle: $('input[name="article"]').val()
+        }, function(data) 
+        {
+          //$("#resultArticle").text(data.result);
+          displayDocument(data.result);
+        });
+        
+        return false;
+      });
+
+      $('a#calcAnalyzeRegex').bind('click', function() 
+      {
+        $.getJSON($SCRIPT_ROOT + '/ajaxAnalyzeRegex', 
+        {
+          valSentenceToAnalyze: $('textArea[name="analyzeRegex"]').val()
+        }, function(data) 
+        {
+          $("#resultAnalyzeRegex").text(data.result);
+        });
+        return false;
+      });
+    });
+  </script>
+    <p>
+        <input type=text size=10 name=article>
+        <a href=# id=calculate>Get Article</a>
+    </p>
+    
+    <p>
+        <textarea size=25 name=analyzeRegex cols="30" rows="5"></textarea>
+        <a href=# id=calcAnalyzeRegex>Analyze Regex</a>
+    </p>
+    <span id="selectedSentence"> </span>
+    <p>
+
+    </p>
+    <p>
+        <span id=resultAnalyzeRegex></span>
+    </p>
+    <p>
+        <ul id=listAnchor></ul>
+    </p>
+    <p>
+        <p id=resultArticle></p>
+    </p>
+    
+
+
+
+<script>
+
+    window.onload = (event) => 
+    {   
+    };
+
+
+    function clickCookie0()
+    {
+        //setCookie("PageCookie0", document.getElementById("inputBox0").value,"100" );
+    }
+
+    function setCookie(cname, cvalue, exdays) 
+    {
+        var d = new Date();
+        d.setTime(d.getTime() + (exdays*24*60*60*1000));
+        var expires = "expires="+ d.toUTCString();
+        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+        //document.cookie = "name=value;expires=sometime;path=/"
+    } 
+
+</script>
+
