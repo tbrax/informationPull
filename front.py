@@ -11,7 +11,8 @@ def checkArticle(name):
 
 def analyzeRegex(sentence):
     #print(gt.getArticle(name))
-    return st.sentenceTokenDisplay(sentence)
+    return "Aw yiss"
+    #return st.sentenceTokenDisplay(sentence)
 
 @app.route('/_add_numbers')
 def add_numbers():
@@ -21,7 +22,7 @@ def add_numbers():
 
 @app.route('/ajaxIdentifySentence')
 def ajaxIdentifySentence():
-    a = request.args.get('valArticle', 0)
+    a = request.args.get('valSentence', 0)
     #b = request.args.get('b', 0, type=int)
     return jsonify(result=checkArticle(a))
 

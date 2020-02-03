@@ -6,7 +6,7 @@ import re
 class SplitText:
     def __init__(self):
         self.sentenceCount = 0
-        self.patternFile = "C:\\Users\\trace\\projects\\python\\masters\\pdata\\patterns.txt"
+        self.patternFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\patterns.txt"
         self.patterns = []
         self.loadPatterns()
     

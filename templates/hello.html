@@ -1,44 +1,6 @@
 <title>Hello!</title>
 
 
-<!--
-<p>
-    <input type="text" id="inputBox0" value="">
-    <input id="clickMe" type="button" value="Set cookie 0" onclick="clickCookie0();" />
-</p>
--->
- <!--
-<form action = "/getArticle" method = "POST">
-    <p>
-        Article Name<input type = 'text' name = 'searchName'/>
-    </p>
-    <p>
-        <input type = 'submit' value = 'Load Article'/>
-    </p>
-</form>
-
-
-<form action = "/saveRegex" method = "POST">
-    <p>
-        Saver Regex<input type = 'text' name = 'saveRegex'/>
-    </p>
-    <p>
-        <input type = 'submit' value = 'Save Regex'/>
-    </p>
-</form>
-
-<form action = "/loadRegex" method = "POST">
-    <p>
-        Saver Regex<input type = 'text' name = 'loadRegex'/>
-    </p>
-    <p>
-        <input type = 'submit' value = 'Load Regex'/>
-    </p>
-</form>
-
-<p>{{ foundSentences }}</p>
--->
-
 <script type=text/javascript>
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
   </script>
@@ -54,15 +16,52 @@ function seperateTextBySentences(text)
     var result = text.match( /[^\.!\?]+[\.!\?]+/g );
     return result
 }
-function identifySentence(sentence)
+
+
+
+
+function showStructure(data)
+{
+
+}
+
+function getStructure(sentence)
+{
+
+    $.getJSON($SCRIPT_ROOT + '/ajaxAnalyzeRegex',
+                {async: false,
+                valSentenceToAnalyze: sentence
+                },
+                function(data) 
+                {
+                    splitSentence(data);
+                });
+
+}
+
+function displaySentence(sentence)
 {
     
 }
 
+function splitSentence(sentence)
+{
+    var sen = document.getElementById("selectedSentence");
+    var words = sentence.split(" ");
+    for (var i in words) 
+    {
+        var btn = document.createElement("button");
+        btn.innerHTML = words[i];
+        sen.appendChild(btn);
+    }
+}
+
 function selectSentence(sentence)
 {
-    document.getElementById("selectedSentence").textContent = sentence; 
-    console.log(sentence);
+    getStructure(sentence);
+    //displaySentence(sentence);
+    //document.getElementById("selectedSentence").textContent = sentence; 
+    //console.log(sentence);
 }
 
 function displayDocument(result)
@@ -143,8 +142,6 @@ function displayDocument(result)
     </p>
     
 
-
-
 <script>
 
     window.onload = (event) => 
@@ -157,14 +154,6 @@ function displayDocument(result)
         //setCookie("PageCookie0", document.getElementById("inputBox0").value,"100" );
     }
 
-    function setCookie(cname, cvalue, exdays) 
-    {
-        var d = new Date();
-        d.setTime(d.getTime() + (exdays*24*60*60*1000));
-        var expires = "expires="+ d.toUTCString();
-        document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-        //document.cookie = "name=value;expires=sometime;path=/"
-    } 
 
 </script>
 
