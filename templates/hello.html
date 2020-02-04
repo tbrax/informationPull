@@ -196,7 +196,6 @@ function displayPatternMatches(result)
 
 function checkPatterns()
 {
-    console.log("Pressed0")
     $.getJSON($SCRIPT_ROOT + '/ajaxReturnPatterns',
                 {
                 valArticle: currentArt.name
@@ -208,8 +207,10 @@ function checkPatterns()
                 });
 }
 
-function displayDocument(strs)
+function displayDocument(result)
 {
+    currentArt.name = result[0]
+    strs = result[1]
     //console.log(result);
     //var list = document.createElement("ul");
     //strs = seperateTextBySentences(result)
@@ -226,6 +227,7 @@ function displayDocument(strs)
 
     var list = document.getElementById("listAnchor");
     removeChildren(list);
+    
     for (let i in strs) 
     {
         var anchor = document.createElement("a");

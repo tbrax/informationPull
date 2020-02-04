@@ -19,7 +19,7 @@ class GetText:
         if self.loadWiki(name):
             
             path = "{0}/{1}.txt".format(self.folder,name)          
-            return self.readFile(path)
+            return [name, self.readFile(path)]
         return False
 
     def splitSentencesToList(self,text):

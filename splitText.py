@@ -115,7 +115,8 @@ class SplitText:
         sentences = sent_tokenize(inputText)
         for x in sentences:
             matchList.append(self.checkSentence(x))
-        if len(matchList == 0):
+        #print(matchList)
+        if (not matchList):
             return False
         return matchList
 
