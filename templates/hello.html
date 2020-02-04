@@ -19,12 +19,6 @@ function seperateTextBySentences(text)
 
 
 
-
-function showStructure(data)
-{
-
-}
-
 function getStructure(sentence)
 {
 
@@ -55,27 +49,52 @@ function removeChildren(element)
         element.removeChild(element.firstChild);
     }
 }
+var sentenceConstruction = [];
 
-function resetConstruction()
+function resetConstructionImage()
 {
     var sen = document.getElementById("constructedSentence");
     removeChildren(sen);
     var sen1 = document.getElementById("constructedGrammar");
     removeChildren(sen1);
 }
-function addWordToConstruction(word,grammar)
+function resetConstruction()
 {
+    sentenceConstruction = [];
+    resetConstructionImage();
+    
+}
+
+function updateConstruction(c)
+{
+    resetConstructionImage();
     var sen0 = document.getElementById("constructedSentence");
     var sen1 = document.getElementById("constructedGrammar");
-    var btn0 = document.createElement("button");
-        btn0.innerHTML = word;
-        btn0.className = "fixedbtn";
-    var btn1 = document.createElement("button");
-        btn1.innerHTML = grammar;
-        btn1.className = "fixedbtn";
-    sen0.appendChild(btn0);
-    sen1.appendChild(btn1);
-    //console.log(word+" "+grammar)
+    for (let i in c)
+    {               
+        var btn0 = document.createElement("button");
+            btn0.innerHTML = c[i][0];
+            btn0.className = "fixedbtn";
+        var btn1 = document.createElement("button");
+            btn1.innerHTML = c[i][1];
+            btn1.className = "fixedbtn";
+        sen0.appendChild(btn0);
+        sen1.appendChild(btn1);
+    }
+}
+function addWholeConstruction(sentence)
+{
+    for(let i in sentence)
+    {
+        addWordToConstruction(sentence[i][0],sentence[i][1])
+    }
+}
+
+function addWordToConstruction(word,grammar)
+{
+    sentenceConstruction.push([word,grammar]);
+    updateConstruction(sentenceConstruction);
+    //console.log(sentenceConstruction);
 }
 
 function splitSentence(sentence)
@@ -84,8 +103,18 @@ function splitSentence(sentence)
     removeChildren(sen0);
     var sen1 = document.getElementById("selectedGrammar");
     removeChildren(sen1);
+    var sen2 = document.getElementById("otherButtons");
+    removeChildren(sen2);
     var anchor = document.createElement("a");
     var anchor1 = document.createElement("a");
+
+    var btnWhole = document.createElement("button");
+        btnWhole.innerHTML = "Add All Words";
+        btnWhole.addEventListener("click", function()
+        {
+            addWholeConstruction(sentence)
+        });
+    sen2.appendChild(btnWhole);
     //console.log(sentence);
     //(sentence)
     //var words = sentence.split(" ");
@@ -208,6 +237,9 @@ function displayDocument(result)
         <span id="constructedGrammar"> </span>      
     </p>
     <hr>
+    <p>
+        <span id="otherButtons"> </span>
+    </p>
     <p>
         <span id="selectedSentence"> </span>
     </p>

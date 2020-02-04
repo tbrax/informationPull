@@ -113,7 +113,8 @@ class SplitText:
     def readFile(self,path):
         f=open(path, "r",encoding="utf8")
         text = f.read()
-        self.findRegexMatches(text)
+        return text
+        
 
 
 
@@ -122,8 +123,8 @@ def main():
     name = "bird"
     folder = "C:\\Users\\trace\\projects\\python\\masters\\articles"
     path = "{0}/{1}.txt".format(folder,name)
+    self.findRegexMatches(sc.readFile(path))
     
-    sc.readFile(path)
 
         
 
