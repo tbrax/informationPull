@@ -7,18 +7,33 @@ gt = GetText()
 st = SplitText()
 def checkArticle(name):
     #print(gt.getArticle(name))
-    return gt.getArticle(name)
+    
+    return st.textToSentenceList(gt.getArticle(name))
+    
 
 def analyzeRegex(sentence):
     #print(gt.getArticle(name))
     #return "Aw yiss"
     return st.sentenceTokenDisplay(sentence)
 
+def findPatternMatchesInArticle(articleName):
+    print(articleName)
+    art = gt.getArticle(articleName)
+    matches = st.findRegexMatches(art)
+    return matches
+
 @app.route('/_add_numbers')
 def add_numbers():
     a = request.args.get('a', 0, type=int)
     b = request.args.get('b', 0, type=int)
     return jsonify(result=a + b)
+
+@app.route('/ajaxReturnPatterns')
+def ajaxReturnPatterns():
+    a = request.args.get('valArticle', 0)
+    #b = request.args.get('b', 0, type=int)
+    return jsonify(result=findPatternMatchesInArticle(a))
+
 
 @app.route('/ajaxIdentifySentence')
 def ajaxIdentifySentence():

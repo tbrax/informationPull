@@ -22,16 +22,19 @@ class GetText:
             return self.readFile(path)
         return False
 
+    def splitSentencesToList(self,text):
+        return text
+
     def loadWiki(self,fname):
-        found = 0
+        found = False
         for filename in os.listdir(self.folder):
             if filename == "{0}.txt".format(fname):
                 print("Document already exists")
-                found = 1
+                found = True
                 self.loaded = "LOADED"
                 return True
-        if found == 0:
-            
+        if (not found) and (not fname==""):
+            print("Try to load article named {0}".format(fname))
             page_py = self.wiki_wiki.page(fname)
             if page_py.exists():
                 encodedStr = page_py.text

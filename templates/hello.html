@@ -11,13 +11,43 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 <script type=text/javascript>
 
+
+class LoadedArticle {
+  constructor() {
+    this.sentenceConstruction = [];
+    this.name = "";
+  }
+  addPatterns()
+  {
+
+  }
+}
+
+let currentArt = new LoadedArticle();
+
 function seperateTextBySentences(text)
 {
     var result = text.match( /[^\.!\?]+[\.!\?]+/g );
     return result
 }
 
+function displayArticlePatterns(sentenceList)
+{
 
+}
+
+function getArticlePatterns(articleName)
+{
+
+    $.getJSON($SCRIPT_ROOT + '/ajaxReturnPatterns',
+                {async: false,
+                valArticleName: articleName
+                },
+                function(data) 
+                {
+                    //splitSentence(data.result);
+                });
+}
 
 function getStructure(sentence)
 {
@@ -30,7 +60,6 @@ function getStructure(sentence)
                 {
                     splitSentence(data.result);
                 });
-
 }
 
 function displaySentence(sentence)
@@ -49,7 +78,7 @@ function removeChildren(element)
         element.removeChild(element.firstChild);
     }
 }
-var sentenceConstruction = [];
+
 
 function resetConstructionImage()
 {
@@ -60,7 +89,7 @@ function resetConstructionImage()
 }
 function resetConstruction()
 {
-    sentenceConstruction = [];
+    currentArt.sentenceConstruction = [];
     resetConstructionImage();
     
 }
@@ -92,8 +121,8 @@ function addWholeConstruction(sentence)
 
 function addWordToConstruction(word,grammar)
 {
-    sentenceConstruction.push([word,grammar]);
-    updateConstruction(sentenceConstruction);
+    currentArt.sentenceConstruction.push([word,grammar]);
+    updateConstruction(currentArt.sentenceConstruction);
     //console.log(sentenceConstruction);
 }
 
@@ -160,11 +189,41 @@ function selectSentence(sentence)
     //console.log(sentence);
 }
 
-function displayDocument(result)
+function displayPatternMatches(result)
+{
+    console.log(result)
+}
+
+function checkPatterns()
+{
+    console.log("Pressed0")
+    $.getJSON($SCRIPT_ROOT + '/ajaxReturnPatterns',
+                {
+                valArticle: currentArt.name
+                },
+                function(data) 
+                {
+                    
+                    displayPatternMatches(data.result);
+                });
+}
+
+function displayDocument(strs)
 {
     //console.log(result);
     //var list = document.createElement("ul");
-    strs = seperateTextBySentences(result)
+    //strs = seperateTextBySentences(result)
+    var patternButtonSpan = document.getElementById("checkPatternSpan");
+
+    removeChildren(patternButtonSpan);
+    var btnPattern = document.createElement("button");
+        btnPattern.innerHTML = "Check Patterns";
+        btnPattern.addEventListener("click", function()
+        {
+            checkPatterns();
+        }); 
+    patternButtonSpan.appendChild(btnPattern);
+
     var list = document.getElementById("listAnchor");
     removeChildren(list);
     for (let i in strs) 
@@ -223,6 +282,9 @@ function displayDocument(result)
     <p>
         <input type=text size=10 name=article>
         <a href=# id=calculate>Get Article</a>
+    </p>
+    <p>
+        <span id="checkPatternSpan"> </span>      
     </p>
     
     <!--<p>

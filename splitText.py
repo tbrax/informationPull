@@ -34,6 +34,9 @@ class SplitText:
         #result = [i[1] for i in tokenList]
         return tokenList
 
+    def textToSentenceList(self,text):
+        return sent_tokenize(text)
+
     #Turn sentence 
     def checkSentence(self,sentence):
         result = self.checkListofWords(self.sentenceToToken(sentence),sentence)
@@ -105,9 +108,16 @@ class SplitText:
         print(result)
 
     def findRegexMatches(self,inputText):
+        matchList = []
+        if (not inputText) or (inputText == ""):
+            return False
+
         sentences = sent_tokenize(inputText)
         for x in sentences:
-            print(self.checkSentence(x))
+            matchList.append(self.checkSentence(x))
+        if len(matchList == 0):
+            return False
+        return matchList
 
 
     def readFile(self,path):
@@ -121,9 +131,9 @@ class SplitText:
 def main():
     sc = SplitText()
     name = "bird"
-    folder = "C:\\Users\\trace\\projects\\python\\masters\\articles"
+    folder = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\articles"
     path = "{0}/{1}.txt".format(folder,name)
-    self.findRegexMatches(sc.readFile(path))
+    sc.findRegexMatches(sc.readFile(path))
     
 
         
