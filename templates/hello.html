@@ -1,4 +1,4 @@
-<title>Hello!</title>
+
 
 
 <script type=text/javascript>
@@ -8,7 +8,7 @@
 <script type=text/javascript src="{{
     url_for('static', filename='jquery.js') }}">
 </script>
-
+<link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 <script type=text/javascript>
 
 function seperateTextBySentences(text)
@@ -34,12 +34,29 @@ function getStructure(sentence)
                 },
                 function(data) 
                 {
-                    splitSentence(data);
+                    splitSentence(data.result);
                 });
 
 }
 
 function displaySentence(sentence)
+{
+    var sen = document.getElementById("selectedSentence");
+    removeChildren(sen);
+    var anchor = document.createElement("a");
+    anchor.innerHTML = sentence;
+    sen.appendChild(anchor);
+}
+
+function removeChildren(element)
+{
+    while (element.firstChild) 
+    {
+        element.removeChild(element.firstChild);
+    }
+}
+
+function changeWordIn(sentence,word)
 {
     
 }
@@ -47,17 +64,47 @@ function displaySentence(sentence)
 function splitSentence(sentence)
 {
     var sen = document.getElementById("selectedSentence");
-    var words = sentence.split(" ");
-    for (var i in words) 
+    removeChildren(sen);
+    var sen2 = document.getElementById("selectedGrammar");
+    removeChildren(sen2);
+    var anchor = document.createElement("a");
+    var anchor2 = document.createElement("a");
+    //console.log(sentence);
+    //(sentence)
+    //var words = sentence.split(" ");
+    for (let i in sentence) 
     {
+        var val0 = sentence[i][0];
+        var val1 = sentence[i][1];
+        var longer = val0;
         var btn = document.createElement("button");
-        btn.innerHTML = words[i];
-        sen.appendChild(btn);
+        btn.innerHTML = val0;
+        btn.className = "fixedbtn";
+        btn.addEventListener("click", function()
+        {
+            console.log(i);
+        }); 
+        anchor.appendChild(btn);
+
+        if (val1.length > longer.length)
+        {
+            longer = val1;
+        }
+
+        var btn2 = document.createElement("button");
+        btn2.className = "fixedbtn";
+        //console.log(paddedValue);
+        btn2.innerHTML = val1;
+        anchor2.appendChild(btn2);
+
     }
+    sen.appendChild(anchor);
+    sen2.appendChild(anchor2);
 }
 
 function selectSentence(sentence)
 {
+    //displaySentence(sentence);
     getStructure(sentence);
     //displaySentence(sentence);
     //document.getElementById("selectedSentence").textContent = sentence; 
@@ -70,19 +117,24 @@ function displayDocument(result)
     //var list = document.createElement("ul");
     strs = seperateTextBySentences(result)
     var list = document.getElementById("listAnchor");
-    for (var i in strs) 
+    for (let i in strs) 
     {
         var anchor = document.createElement("a");
         anchor.href = "#";
         anchor.innerText = strs[i];
-        anchor.id = "articleSentence" + i
+        anchor.id = "articleSentence" + i;
+        anchor.addEventListener("click", function()
+        {
+            selectSentence(strs[i]);
+        }); 
+        /*
         anchor.onclick = function () 
         {
             var thisName = this.id;
             var res = thisName.split("articleSentence")[1];
             var resNum = parseInt(res);
             selectSentence(strs[resNum]);
-        };
+        };*/
 
         var elem = document.createElement("li");
         elem.appendChild(anchor);
@@ -123,11 +175,14 @@ function displayDocument(result)
         <a href=# id=calculate>Get Article</a>
     </p>
     
-    <p>
+    <!--<p>
         <textarea size=25 name=analyzeRegex cols="30" rows="5"></textarea>
         <a href=# id=calcAnalyzeRegex>Analyze Regex</a>
-    </p>
+    </p>-->
     <span id="selectedSentence"> </span>
+    <p>
+    </p>
+    <span id="selectedGrammar"> </span>
     <p>
 
     </p>

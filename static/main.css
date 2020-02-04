@@ -1,0 +1,14 @@
+.fixedbtn {
+
+    background: #000;
+    border-radius: 2px;
+    border: 1px solid #FFF;
+    color: #FFF;
+    cursor: pointer;
+    padding: 2px 3px;
+    box-sizing: border-box;
+    outline: none;
+    font-size: 12px;
+    width: 70px;
+
+}

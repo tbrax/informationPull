@@ -28,11 +28,11 @@ class SplitText:
         text = word_tokenize(sentence)
         return self.wordToToken(text)
 
-    #Turns a sentence to tokens, and returns only list of tokens
+    #Turns a sentence to tokens, and returns list
     def sentenceTokenDisplay(self,sentence):
         tokenList = self.sentenceToToken(sentence)
-        result = [i[1] for i in tokenList]
-        return result
+        #result = [i[1] for i in tokenList]
+        return tokenList
 
     #Turn sentence 
     def checkSentence(self,sentence):
