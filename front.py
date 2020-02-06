@@ -1,10 +1,14 @@
-from flask import Flask, render_template, make_response, request, redirect, url_for, abort, jsonify, render_template
+from flask import Flask, jsonify, render_template, make_response, request, redirect, url_for, abort, jsonify, render_template
 
 from splitText import SplitText
 from getText import GetText
 app = Flask(__name__)
 gt = GetText()
 st = SplitText()
+def savePattern(pattern,fullSentence):
+
+    st.savePattern(pattern,fullSentence)
+
 def checkArticle(name):
     #print(gt.getArticle(name))
     article = gt.getArticle(name)
@@ -24,11 +28,21 @@ def findPatternMatchesInArticle(articleName):
     matches = st.findRegexMatches(art[1])
     return matches
 
+
 @app.route('/_add_numbers')
 def add_numbers():
     a = request.args.get('a', 0, type=int)
     b = request.args.get('b', 0, type=int)
     return jsonify(result=a + b)
+
+@app.route('/ajaxSavePattern')
+def ajaxSavePattern():
+    a = request.args.getlist('valPattern', None)
+    b = request.args.getlist('valSentence', None)
+    #print(b)
+    savePattern(a,b)
+
+    return "Saved"
 
 @app.route('/ajaxReturnPatterns')
 def ajaxReturnPatterns():

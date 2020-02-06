@@ -7,14 +7,35 @@ class SplitText:
     def __init__(self):
         self.sentenceCount = 0
         self.patternFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\patterns.txt"
+        self.patternSaveFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\patterns.txt"
+        self.patternSaveFile2 = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\savedPatterns.txt"
         self.patterns = []
         self.loadPatterns()
     
+    def savePattern(self,patternList,fullSentenceList):
+        print("Saving")
+        pString = ""
+        sString = ""
+
+        for x in patternList:
+            pString+="{0} ".format(x)
+        for x in fullSentenceList:
+            sString +="{0} ".format(x)
+
+        f = open(self.patternSaveFile2, "a")
+        f.write("P:{0}".format(pString))
+        f.write("\n")
+        f.write("S:{0}".format(sString))
+        f.write("\n")
+        return 0
+
+
     #Load Regex Patterns from file
     def loadPatterns(self):
         with open(self.patternFile, "r", encoding="utf-8") as f:
             for line in f:
-                self.patterns.append(line.strip())
+                if (line.startswith('P:')):
+                    self.patterns.append(line[2:].strip())
 
     #Turn word list to POS tokens
     def wordToToken(self,wordList):
@@ -38,8 +59,8 @@ class SplitText:
         return sent_tokenize(text)
 
     #Turn sentence 
-    def checkSentence(self,sentence):
-        result = self.checkListofWords(self.sentenceToToken(sentence),sentence)
+    def checkSentenceRegex(self,sentence):
+        result = self.checkListofWordsRegex(self.sentenceToToken(sentence),sentence)
         return result
         #text = word_tokenize(sentence)
         #self.checkWord(nltk.pos_tag(text))
@@ -85,7 +106,7 @@ class SplitText:
             return resultDict
         return False
 
-    def checkListofWords(self,tokenList,originalSentence):
+    def checkListofWordsRegex(self,tokenList,originalSentence):
         #print(nltkTag)
         newSentence = ""
         sentenceLocationCount = 0
@@ -114,7 +135,7 @@ class SplitText:
 
         sentences = sent_tokenize(inputText)
         for x in sentences:
-            matchList.append(self.checkSentence(x))
+            matchList.append(self.checkSentenceRegex(x))
         #print(matchList)
         if (not matchList):
             return False

@@ -16,6 +16,7 @@ class LoadedArticle {
   constructor() {
     this.sentenceConstruction = [];
     this.name = "";
+    this.sentence = "";
   }
   addPatterns()
   {
@@ -126,8 +127,50 @@ function addWordToConstruction(word,grammar)
     //console.log(sentenceConstruction);
 }
 
+
+function getColumn(array,col)
+{
+    temp = []
+    for (var x in array)
+    {
+        temp.push(array[x][col])
+    }
+    return temp
+}
+
+function arrayToString(arr)
+{
+    temp = []
+    for (var x in arr)
+    {
+        temp.push(arr[x])
+    }
+    return temp
+}
+function savePattern()
+{
+    var sendP = getColumn(currentArt.sentenceConstruction,1);
+    var sendS = getColumn(currentArt.sentence,1); 
+    console.log(sendP);
+    console.log(sendS);
+
+
+    $.ajax({
+    url: $SCRIPT_ROOT + '/ajaxSavePattern',
+    data: { valPattern: sendP, valSentence: sendS },
+    traditional: true,
+    success: function(result) {
+
+    }
+});
+
+}
+
+
+
 function splitSentence(sentence)
 {
+    currentArt.sentence = sentence
     var sen0 = document.getElementById("selectedSentence");
     removeChildren(sen0);
     var sen1 = document.getElementById("selectedGrammar");
@@ -143,6 +186,13 @@ function splitSentence(sentence)
         {
             addWholeConstruction(sentence)
         });
+        var btnWhole = document.createElement("button");
+        btnWhole.innerHTML = "Save Pattern";
+        btnWhole.addEventListener("click", function()
+        {
+            savePattern()
+        });
+
     sen2.appendChild(btnWhole);
     //console.log(sentence);
     //(sentence)
@@ -182,6 +232,7 @@ function splitSentence(sentence)
 
 function selectSentence(sentence)
 {
+    
     //displaySentence(sentence);
     getStructure(sentence);
     //displaySentence(sentence);
