@@ -10,10 +10,10 @@ class GetText:
         self.options = []
         self.wiki_wiki = wikipediaapi.Wikipedia('en')
         self.folder = "C:\\Users\\trace\\projects\\python\\masters\\informationpull\\articles"
-
+   
     def readFile(self,path):
         f=open(path, "r",encoding="utf8")
-        return f.read() 
+        return f.read()
     
     def getArticle(self,name):
         if self.loadWiki(name):

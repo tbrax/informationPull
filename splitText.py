@@ -12,23 +12,57 @@ class SplitText:
         self.patternSaveFile2 = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\savedPatterns.txt"
         self.patterns = []
         self.loadPatterns()
+
+    def getNeuralPatterns(self):
+        return 0
+
+    def readFileLines(self,path):
+        f=open(path, "r",encoding="utf8")
+        return f.readlines()
+
+    def getPatternObject(self):
+        text = self.readFileLines(self.patternSaveFile2)
+        patternObj = []
+        fullObj = []
+        for line in text:
+            if (line.startswith('P:')):
+                reduced = line[2:].strip()
+                rSep = reduced.split("|,,|")
+                wordArr = []
+                for item in rSep:
+                    if item is not "":
+                        iSep = item.split("|..|")
+                        wordArr.append(iSep)
+                if len(wordArr) > 0:
+                    patternObj.append(wordArr)
+
+            elif (line.startswith('S:')):
+                full = line[2:].strip()
+                fSep = full.split("|,,|")
+                wordArr = []
+                for item in fSep:
+                    if item is not "":
+                        iSep = item.split("|..|")
+                        wordArr.append(iSep)
+                if len(wordArr) > 0:
+                    fullObj.append(wordArr)
+        return [patternObj,fullObj]
+
     
     def savePattern(self,patternList,fullSentenceList):
+        #print(patternList)
+        #(fullSentenceList)
         pString = ""
         sString = ""
-        
         for i in patternList:
             x = i.split(",")
-
-            pString+="{1},{2},{0} ".format(x[0],x[1],x[2])
+            pString+="{1}|..|{0}|..|{2}|,,|".format(x[0],x[1],x[2])
         for i in fullSentenceList:
             x = i.split(",")
-            sString+="{1},{0} ".format(x[0],x[1])
+            sString+="{1}|..|{0}|,,|".format(x[0],x[1])
 
         f = open(self.patternSaveFile2, "a",encoding="utf-8")
         f.write("P:{0}".format(pString))
-        f.write("\n")
-        f.write("I:{0}".format(pString))
         f.write("\n")
         f.write("S:{0}".format(sString))
         f.write("\n")
@@ -43,8 +77,17 @@ class SplitText:
                     self.patterns.append(line[2:].strip())
 
     #Turn word list to POS tokens
+
     def wordToToken(self,wordList):
         return nltk.pos_tag(wordList)
+
+    def listToToken(self, sentenceList):
+        returnList = []
+        for i in sentenceList:
+            returnList.append(self.sentenceToToken(i))
+        return returnList
+
+        
 
     #Turn sentence to list of POS tokens
     # 'The great big dog' becomes
@@ -53,6 +96,7 @@ class SplitText:
         #Seperates sentence into list of words
         text = word_tokenize(sentence)
         return self.wordToToken(text)
+        #return nltk.pos_tag(sentence)
 
     #Turns a sentence to tokens, and returns list
     def sentenceTokenDisplay(self,sentence):
