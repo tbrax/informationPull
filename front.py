@@ -2,11 +2,17 @@ from flask import Flask, jsonify, render_template, make_response, request, redir
 
 from splitText import SplitText
 from getText import GetText
+from textObject import TextObject
 app = Flask(__name__)
 gt = GetText()
 st = SplitText()
-def savePattern(pattern,fullSentence):
+tt = TextObject()
 
+def findNeuralMatchesInArticle():
+    return 0
+
+def savePattern(pattern,fullSentence):
+    
     st.savePattern(pattern,fullSentence)
 
 def checkArticle(name):
@@ -15,6 +21,8 @@ def checkArticle(name):
     title = article[0]
     text = article[1]
     sentences = st.textToSentenceList(text)
+    tt.saveSentences(title,sentences)
+
     return [title,sentences]
     
 
@@ -39,7 +47,6 @@ def add_numbers():
 def ajaxSavePattern():
     a = request.args.getlist('valPattern', None)
     b = request.args.getlist('valSentence', None)
-    #print(b)
     savePattern(a,b)
 
     return "Saved"

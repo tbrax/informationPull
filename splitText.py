@@ -2,6 +2,7 @@ import os
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
 import re
+import neuralSentence
 
 class SplitText:
     def __init__(self):
@@ -13,17 +14,21 @@ class SplitText:
         self.loadPatterns()
     
     def savePattern(self,patternList,fullSentenceList):
-        print("Saving")
         pString = ""
         sString = ""
+        
+        for i in patternList:
+            x = i.split(",")
 
-        for x in patternList:
-            pString+="{0} ".format(x)
-        for x in fullSentenceList:
-            sString +="{0} ".format(x)
+            pString+="{1},{2},{0} ".format(x[0],x[1],x[2])
+        for i in fullSentenceList:
+            x = i.split(",")
+            sString+="{1},{0} ".format(x[0],x[1])
 
-        f = open(self.patternSaveFile2, "a")
+        f = open(self.patternSaveFile2, "a",encoding="utf-8")
         f.write("P:{0}".format(pString))
+        f.write("\n")
+        f.write("I:{0}".format(pString))
         f.write("\n")
         f.write("S:{0}".format(sString))
         f.write("\n")

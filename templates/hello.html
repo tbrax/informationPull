@@ -120,9 +120,9 @@ function addWholeConstruction(sentence)
     }
 }
 
-function addWordToConstruction(word,grammar)
+function addWordToConstruction(word,grammar,index)
 {
-    currentArt.sentenceConstruction.push([word,grammar]);
+    currentArt.sentenceConstruction.push([word,grammar,index]);
     updateConstruction(currentArt.sentenceConstruction);
     //console.log(sentenceConstruction);
 }
@@ -149,10 +149,12 @@ function arrayToString(arr)
 }
 function savePattern()
 {
-    var sendP = getColumn(currentArt.sentenceConstruction,1);
-    var sendS = getColumn(currentArt.sentence,1); 
-    console.log(sendP);
-    console.log(sendS);
+    //var sendP = getColumn(currentArt.sentenceConstruction,1);
+    //var sendS = getColumn(currentArt.sentence,1); 
+    var sendP = currentArt.sentenceConstruction;
+    var sendS = currentArt.sentence;
+    //console.log(sendP);
+    //console.log(sendS);
 
 
     $.ajax({
@@ -217,12 +219,12 @@ function splitSentence(sentence)
 
         btn.addEventListener("click", function()
         {
-            addWordToConstruction(val0,val1)
+            addWordToConstruction(val0,val1,i)
         }); 
 
         btn2.addEventListener("click", function()
         {
-            addWordToConstruction(val0,val1)
+            addWordToConstruction(val0,val1,i)
         }); 
 
     }

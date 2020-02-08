@@ -1,2 +1,6 @@
 /articles
 /__pycache__
+saved_model.pb
+/use
+neural.py
+pdata/wod.txt

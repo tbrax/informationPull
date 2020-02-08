@@ -1,2 +1,2 @@
-P:
-S:DT NN VBZ RB VBN IN DT NN CC VBN IN NN . 
+P:DT,0,A NN,1,taco VBZ,15,is 
+S:DT,A NN,taco (,( PRP,US :,: , NNP,UK :,: , JJ,Spanish :,: NN,[ NNP,ˈtako NNP,] ),) VBZ,is DT,a JJ,traditional JJ,Mexican NN,dish NN,consisting IN,of DT,a JJ,small JJ,hand-sized NN,corn CC,or NN,wheat NN,tortilla VBD,topped IN,with DT,a NN,filling .,. 
