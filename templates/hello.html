@@ -17,6 +17,7 @@ class LoadedArticle {
     this.sentenceConstruction = [];
     this.name = "";
     this.sentence = "";
+    this.neuralMatchType = 0
   }
   addPatterns()
   {
@@ -70,7 +71,7 @@ function checkNeuralPatterns()
 {
     $.getJSON($SCRIPT_ROOT + '/ajaxneuralmatches',
                 {
-                valArticle: currentArt.name
+                    valMatchGrammar: currentArt.neuralMatchType
                 },
                 function(data) 
                 {
@@ -313,6 +314,32 @@ function addDocumentButtons()
         }); 
     patternButtonNeuralSpan.appendChild(btnPattern1);
 
+    var select = document.createElement("select");
+    select.id = "neuralSelect";
+    select.name="neuralSelect";
+
+
+    var option0 = document.createElement("option");
+    option0.value=0;
+    option0.selected="";
+    option0.innerHTML= "grammar";
+    option0.addEventListener("click", function()
+    {
+        currentArt.neuralMatchType = 0
+    }); 
+
+    var option1 = document.createElement("option");
+    option1.value=1;
+    option1.innerHTML= "text";
+    option1.addEventListener("click", function()
+    {
+        currentArt.neuralMatchType = 1
+    }); 
+
+    select.appendChild(option0);
+    select.appendChild(option1);
+
+    patternButtonNeuralSpan.appendChild(select);
 
 }
 
@@ -385,6 +412,15 @@ function displayDocument(result)
         <input type=text size=10 name=article>
         <a href=# id=calculate>Get Article</a>
     </p>
+
+    <p>
+        <span id="finalResultSpan"> </span>      
+    </p>
+    <hr>
+    <p>
+        <span id="questionResultSpan"> </span>      
+    </p>
+    <hr>
     <p>
         <span id="checkPatternSpan"> </span>      
     </p>

@@ -44,8 +44,8 @@ def add_numbers():
 
 @app.route('/ajaxneuralmatches')
 def ajaxneuralmatches():
-    a = request.args.getlist('valMatchGrammar', None)
-    results = findNeuralMatchesInArticle(0)
+    a = request.args.getlist('valMatchGrammar', 0)
+    results = findNeuralMatchesInArticle(a)
     return jsonify(result=results)
 
 @app.route('/ajaxSavePattern')
