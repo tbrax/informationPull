@@ -62,57 +62,149 @@ function displayPatternResults()
 
 }
 
+function confirmHandPattern(data)
+{
+    currentArt.addResult(["Hand",data[3],data[4]])
+    //console.log(data)
+}
+
 function showHandReturn(data)
 {
+    //currentArt.addResult(["Hand",data[3],data[4]])
     console.log(data)
+    showReturnResult(data,"Hand")
+}
+
+function confirmRegexPattern(data)
+{
+    currentArt.addResult(['Regex',data['Matching'],data['Regex Matched']])
+    //console.log(data)
 }
 
 function showRegexReturn(data)
 {
-    console.log(data)
+    showReturnRegexResult(data,"Regex")
+    //currentArt.addResult(["Regex",data[3],data[4]])
 }
 
 function confirmNeuralPattern(data)
 {
-    currentArt.addResult(["Neural",data[3],data[4]])
+    currentArt.addResult(["Neural",data['Article Text'],data['Article Grammar']])
     //console.log(data)
 }
 
 function showNeuralReturn(data)
 {
-    console.log(data)
+    //console.log(data)
+    showReturnResult(data,"Neural")
+}
+
+
+function showReturnRegexResult(data,type)
+{
     var q = document.getElementById("questionResultSpan");
     removeChildren(q)
     var listContainer = document.createElement('div')
     var listElement = document.createElement('ul')
     listContainer.appendChild(listElement)
-    for (let x = 0; x < 5; ++x) 
+    for (let x in data) 
+    {
+        var isValue = true
+        
+        for (let y in data[x]) 
+        {   
+            var innerItem = document.createElement('li')
+            var listItem = document.createElement('ul')
+
+            if (data[x][y] ==false)
+            {
+                isValue = false
+            }
+            for (let [key, value] of Object.entries(data[x][y])) 
+            {
+                var subItem = document.createElement('li')
+                subItem.innerHTML = `${key}: ${value}`;
+                listItem.appendChild(subItem)
+            }
+
+            if (isValue != false)
+            {
+                listElement.appendChild(innerItem)
+                var btnWhole0 = document.createElement("button");
+                btnWhole0.innerHTML = "Add result";
+                if (type == "Regex")
+                {
+                    btnWhole0.addEventListener("click", function()
+                    {
+                        confirmRegexPattern(data[x][y])
+                    });
+                }
+                
+                innerItem.appendChild(listItem)
+                innerItem.appendChild(btnWhole0)
+            }
+        }
+    }
+    q.appendChild(listContainer)
+}
+
+function showReturnResult(data,type)
+{
+    var q = document.getElementById("questionResultSpan");
+    removeChildren(q)
+    var listContainer = document.createElement('div')
+    var listElement = document.createElement('ul')
+    listContainer.appendChild(listElement)
+    //for (let x = 0; x < data.length; ++x) 
+    for (let x in data) 
     {
         var innerItem = document.createElement('li')
         listElement.appendChild(innerItem)
         var listItem = document.createElement('ul')
         //listItem.innerHTML = data[i];
-        for (var y in data[x])
+        for (let [key, value] of Object.entries(data[x])) 
+        {
+            //console.log(`${key}: ${value}`);
+            var subItem = document.createElement('li')
+            subItem.innerHTML = `${key}: ${value}`;
+            listItem.appendChild(subItem)
+
+        }
+        /*for (var y in data[x])
         {
             var subItem = document.createElement('li')
-            subItem.innerHTML = data[x][y];
+            subItem.innerHTML = data[x][y].key;
             listItem.appendChild(subItem)
-        }
-
+        }*/
         ///
         var btnWhole0 = document.createElement("button");
         btnWhole0.innerHTML = "Add result";
-        btnWhole0.addEventListener("click", function()
+        if (type == "Neural")
         {
-            confirmNeuralPattern(data[x])
-        });
-
+            btnWhole0.addEventListener("click", function()
+            {
+                confirmNeuralPattern(data[x])
+            });
+        }
+        else if (type == "Regex")
+        {
+            btnWhole0.addEventListener("click", function()
+            {
+                confirmRegexPattern(data[x])
+            });
+        }
+        else if (type == "Hand")
+        {
+            btnWhole0.addEventListener("click", function()
+            {
+                confirmHandPattern(data[x])
+            });
+        }
         innerItem.appendChild(listItem)
         innerItem.appendChild(btnWhole0)
     }
     q.appendChild(listContainer)
 }
-
 
 function checkRegexPatterns()
 {
@@ -122,8 +214,7 @@ function checkRegexPatterns()
                 },
                 function(data) 
                 {
-                    
-                    displayPatternMatches(data.result);
+                    showRegexReturn(data.result);
                 });
 }
 
@@ -471,10 +562,7 @@ function displayDocument(result)
         <span id="finalResultSpan"> </span>      
     </p>
     <hr>
-    <p>
-        <span id="questionResultSpan"> </span>      
-    </p>
-    <hr>
+    
     <p>
         <span id="checkPatternSpan"> </span>      
     </p>
@@ -509,9 +597,12 @@ function displayDocument(result)
     </p>
     <hr>
     <p>
+        <span id="questionResultSpan"> </span>      
+    </p>
+    <hr>
+    <p>
         <ul id=listAnchor></ul>
     </p>
-    
     <p>
         <p id=resultArticle></p>
     </p>

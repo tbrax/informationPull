@@ -62,25 +62,29 @@ class TextObject:
             matchList = []
             for idx, x in enumerate(results):
                 for idy, y in enumerate(x):
-                    matchList.append([  y,
-                                        grammarPattern[idy],
-                                        sentencesFull[idy],
-                                        grammarText[idx],
-                                        text[idx]
-                                        
-                                        ])
+
+                    resultDict = {
+                                    "Value":y,
+                                    "Pattern Grammar":grammarPattern[idy],
+                                    "Pattern Sentence":sentencesFull[idy],
+                                    "Article Grammar":grammarText[idx],
+                                    "Article Text":text[idx]
+                                }
+                  # matchList.append([ y,grammarPattern[idy],sentencesFull[idy],grammarText[idx],text[idx]])
+                    matchList.append(resultDict)
                     
             return self.convertListString(self.viewMatches(matchList))
 
     def convertListString(self,data):
         for x in data:
-            x[0] = str(x[0])
+            x["Value"] = str(x["Value"])
         return data
 
     def viewMatches(self,neuralMatchList):
-        columnIndex = 0
-        sortedArr = neuralMatchList
-        sortedArr.sort(key=lambda x: x[columnIndex],reverse=True)
+        #columnIndex = 0
+        #sortedArr = neuralMatchList
+        #sortedArr.sort(key=lambda x: x[columnIndex],reverse=True)
+        sortedArr = sorted(neuralMatchList, key = lambda i: i['Value'],reverse=True) 
         return sortedArr
         
     def saveSentences(self,title,sentences):
@@ -91,10 +95,7 @@ class TextObject:
 
 
 def main():
-    tt = TextObject()
-    
-    tt.textLoaded = True
-    tt.findNeuralMatches()
+    return True
 
 
 if __name__== "__main__":

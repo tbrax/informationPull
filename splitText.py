@@ -146,10 +146,10 @@ class SplitText:
                 wordNum = self.findInList(sentenceLocationList, result.span(gp)[0])
                 showStr += nltkTag[wordNum][0] + " "
             resultDict = {  
-                            "matching":showStr,
-                            "pattern":pattern,
-                            "tokens":newSentence,
-                            "original":originalSentence
+                            "Matching":showStr,
+                            "Regex Matched":pattern,
+                            "Full Tokens":newSentence,
+                            "Full Matching":originalSentence
                             }
             #return {showStr,pattern,newSentence,originalSentence}
             return resultDict
