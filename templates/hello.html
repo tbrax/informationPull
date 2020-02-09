@@ -37,9 +37,51 @@ function displayArticlePatterns(sentenceList)
 
 }
 
+function showHandReturn(data)
+{
+    console.log(data)
+}
+
+function showRegexReturn(data)
+{
+    console.log(data)
+}
+
+function showNeuralReturn(data)
+{
+    console.log(data)
+}
+
+
+function checkRegexPatterns()
+{
+    $.getJSON($SCRIPT_ROOT + '/ajaxReturnPatterns',
+                {
+                valArticle: currentArt.name
+                },
+                function(data) 
+                {
+                    
+                    displayPatternMatches(data.result);
+                });
+}
+
+function checkNeuralPatterns()
+{
+    $.getJSON($SCRIPT_ROOT + '/ajaxneuralmatches',
+                {
+                valArticle: currentArt.name
+                },
+                function(data) 
+                {
+                    showNeuralReturn(data)
+                    
+                });
+}
+
+
 function getArticlePatterns(articleName)
 {
-
     $.getJSON($SCRIPT_ROOT + '/ajaxReturnPatterns',
                 {async: false,
                 valArticleName: articleName
@@ -155,14 +197,13 @@ function savePattern()
     var sendS = currentArt.sentence;
     //console.log(sendP);
     //console.log(sendS);
-
-
     $.ajax({
     url: $SCRIPT_ROOT + '/ajaxSavePattern',
     data: { valPattern: sendP, valSentence: sendS },
     traditional: true,
-    success: function(result) {
-
+    success: function(result) 
+    {
+        showHandReturn(result)
     }
 });
 
@@ -247,17 +288,32 @@ function displayPatternMatches(result)
     console.log(result)
 }
 
-function checkPatterns()
+
+
+
+function addDocumentButtons()
 {
-    $.getJSON($SCRIPT_ROOT + '/ajaxReturnPatterns',
-                {
-                valArticle: currentArt.name
-                },
-                function(data) 
-                {
-                    
-                    displayPatternMatches(data.result);
-                });
+    var patternButtonSpan = document.getElementById("checkPatternSpan");
+    removeChildren(patternButtonSpan);
+    var btnPattern = document.createElement("button");
+        btnPattern.innerHTML = "Check Regex Patterns";
+        btnPattern.addEventListener("click", function()
+        {
+            checkRegexPatterns();
+        }); 
+    patternButtonSpan.appendChild(btnPattern);
+
+    var patternButtonNeuralSpan = document.getElementById("checkPatternNeuralSpan");
+    removeChildren(patternButtonNeuralSpan);
+    var btnPattern1 = document.createElement("button");
+        btnPattern1.innerHTML = "Check Neural Patterns";
+        btnPattern1.addEventListener("click", function()
+        {
+            checkNeuralPatterns();
+        }); 
+    patternButtonNeuralSpan.appendChild(btnPattern1);
+
+
 }
 
 function displayDocument(result)
@@ -267,17 +323,8 @@ function displayDocument(result)
     //console.log(result);
     //var list = document.createElement("ul");
     //strs = seperateTextBySentences(result)
-    var patternButtonSpan = document.getElementById("checkPatternSpan");
-
-    removeChildren(patternButtonSpan);
-    var btnPattern = document.createElement("button");
-        btnPattern.innerHTML = "Check Patterns";
-        btnPattern.addEventListener("click", function()
-        {
-            checkPatterns();
-        }); 
-    patternButtonSpan.appendChild(btnPattern);
-
+    addDocumentButtons()
+    
     var list = document.getElementById("listAnchor");
     removeChildren(list);
     
@@ -340,6 +387,9 @@ function displayDocument(result)
     </p>
     <p>
         <span id="checkPatternSpan"> </span>      
+    </p>
+    <p>
+        <span id="checkPatternNeuralSpan"> </span>      
     </p>
     
     <!--<p>

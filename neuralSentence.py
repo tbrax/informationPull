@@ -26,13 +26,15 @@ class NeuralClass:
 
     def runAndPlotPatterns(self,patterns,text):
         patternEmbed = self.embed(patterns)
-        textEmbed = self.embed(text) 
-        print(textEmbed)
-        self.plot_similarity(text,patterns, textEmbed,patternEmbed, 90)
-        plt.show()
+        textEmbed = self.embed(text)
+        cross = np.inner(textEmbed, patternEmbed)
+        #print(cross)
+        #self.plot_similarity(text,patterns, textEmbed,patternEmbed, cross)
+        #plt.show()
+        return cross
 
-    def plot_similarity(self, labels0,labels1, features0,features1, rotation):
-        corr = np.inner(features0, features1)
+    def plot_similarity(self, labels0,labels1, features0,features1, corr):
+        #corr = np.inner(features0, features1)
         #print(corr)
         sns.set(font_scale=1.2)
         g = sns.heatmap(

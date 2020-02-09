@@ -8,15 +8,16 @@ gt = GetText()
 st = SplitText()
 tt = TextObject()
 
-def findNeuralMatchesInArticle():
-    return 0
+def findNeuralMatchesInArticle(resultType):
+    results = tt.findNeuralMatches(resultType)
+    return results
 
 def savePattern(pattern,fullSentence):
     
     st.savePattern(pattern,fullSentence)
 
 def checkArticle(name):
-    #print(gt.getArticle(name))
+
     article = gt.getArticle(name)
     title = article[0]
     text = article[1]
@@ -27,8 +28,6 @@ def checkArticle(name):
     
 
 def analyzeRegex(sentence):
-    #print(gt.getArticle(name))
-    #return "Aw yiss"
     return st.sentenceTokenDisplay(sentence)
 
 def findPatternMatchesInArticle(articleName):
@@ -43,20 +42,23 @@ def add_numbers():
     b = request.args.get('b', 0, type=int)
     return jsonify(result=a + b)
 
+@app.route('/ajaxneuralmatches')
+def ajaxneuralmatches():
+    a = request.args.getlist('valMatchGrammar', None)
+    results = findNeuralMatchesInArticle(0)
+    return jsonify(result=results)
+
 @app.route('/ajaxSavePattern')
 def ajaxSavePattern():
     a = request.args.getlist('valPattern', None)
     b = request.args.getlist('valSentence', None)
     savePattern(a,b)
+    return jsonify(result=b)
 
-    return "Saved"
 
 @app.route('/ajaxReturnPatterns')
 def ajaxReturnPatterns():
     a = request.args.get('valArticle', 0)
-    #print("WALUIGI")
-    #print(a)
-    #b = request.args.get('b', 0, type=int)
     return jsonify(result=findPatternMatchesInArticle(a))
 
 
