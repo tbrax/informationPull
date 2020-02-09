@@ -17,11 +17,8 @@ class LoadedArticle {
     this.sentenceConstruction = [];
     this.name = "";
     this.sentence = "";
-    this.neuralMatchType = 0
-  }
-  addPatterns()
-  {
-
+    this.neuralMatchType = "grammar"
+    this.results = []
   }
 }
 
@@ -51,6 +48,19 @@ function showRegexReturn(data)
 function showNeuralReturn(data)
 {
     console.log(data)
+    var q = document.getElementById("questionResultSpan");
+
+    var listContainer = document.createElement('div')
+    var listElement = document.createElement('ul')
+    listContainer.appendChild(listElement)
+    for (var i = 0; i < 5; ++i) 
+    {
+        console.log(data[i])
+        var listItem = document.createElement('li')
+        listItem.innerHTML = data[i];
+        listContainer.appendChild(listItem)
+    }
+    q.appendChild(listContainer)
 }
 
 
@@ -75,7 +85,7 @@ function checkNeuralPatterns()
                 },
                 function(data) 
                 {
-                    showNeuralReturn(data)
+                    showNeuralReturn(data.result)
                     
                 });
 }
@@ -224,20 +234,21 @@ function splitSentence(sentence)
     var anchor = document.createElement("a");
     var anchor1 = document.createElement("a");
 
-    var btnWhole = document.createElement("button");
-        btnWhole.innerHTML = "Add All Words";
-        btnWhole.addEventListener("click", function()
+    var btnWhole0 = document.createElement("button");
+        btnWhole0.innerHTML = "Add All Words";
+        btnWhole0.addEventListener("click", function()
         {
             addWholeConstruction(sentence)
         });
-        var btnWhole = document.createElement("button");
-        btnWhole.innerHTML = "Save Pattern";
-        btnWhole.addEventListener("click", function()
+    sen2.appendChild(btnWhole0);
+    var btnWhole1 = document.createElement("button");
+        btnWhole1.innerHTML = "Save Pattern";
+        btnWhole1.addEventListener("click", function()
         {
             savePattern()
         });
 
-    sen2.appendChild(btnWhole);
+    sen2.appendChild(btnWhole1);
     //console.log(sentence);
     //(sentence)
     //var words = sentence.split(" ");
@@ -325,7 +336,7 @@ function addDocumentButtons()
     option0.innerHTML= "grammar";
     option0.addEventListener("click", function()
     {
-        currentArt.neuralMatchType = 0
+        currentArt.neuralMatchType = "grammar"
     }); 
 
     var option1 = document.createElement("option");
@@ -333,7 +344,7 @@ function addDocumentButtons()
     option1.innerHTML= "text";
     option1.addEventListener("click", function()
     {
-        currentArt.neuralMatchType = 1
+        currentArt.neuralMatchType = "text"
     }); 
 
     select.appendChild(option0);

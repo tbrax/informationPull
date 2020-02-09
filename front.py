@@ -9,7 +9,8 @@ st = SplitText()
 tt = TextObject()
 
 def findNeuralMatchesInArticle(resultType):
-    results = tt.findNeuralMatches(resultType)
+    tp = resultType[0]
+    results = tt.findNeuralMatches(tp)
     return results
 
 def savePattern(pattern,fullSentence):
@@ -44,7 +45,7 @@ def add_numbers():
 
 @app.route('/ajaxneuralmatches')
 def ajaxneuralmatches():
-    a = request.args.getlist('valMatchGrammar', 0)
+    a = request.args.getlist('valMatchGrammar', None)
     results = findNeuralMatchesInArticle(a)
     return jsonify(result=results)
 
@@ -53,7 +54,7 @@ def ajaxSavePattern():
     a = request.args.getlist('valPattern', None)
     b = request.args.getlist('valSentence', None)
     savePattern(a,b)
-    return jsonify(result=b)
+    return jsonify(result=a)
 
 
 @app.route('/ajaxReturnPatterns')

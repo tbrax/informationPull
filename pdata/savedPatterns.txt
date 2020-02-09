@@ -1,4 +1,5 @@
 P:DT|..|The|..|0|,,|NN|..|tortilla|..|1|,,|VBZ|..|is|..|2|,,|
 S:DT|..|The|,,|NN|..|tortilla|,,|VBZ|..|is|,,|RB|..|then|,,|VBN|..|folded|,,|IN|..|around|,,|DT|..|the|,,|NN|..|filling|,,|CC|..|and|,,|VBN|..|eaten|,,|IN|..|by|,,|NN|..|hand|,,|.|..|.|,,|
 P:NNS|..|Tacos|..|0|,,|VBP|..|are|..|1|,,|JJ|..|common|..|3|,,|
-S:NNS|..|Tacos|,,|VBP|..|are|,,|DT|..|a|,,|JJ|..|common|,,|NN|..|form|,,|IN|..|of|,,|NN|..|antojitos|,,||..||,,|CC|..|or|,,|NNP|..|Mexican|,,|NN|..|street|,,|NN|..|food|,,||..||,,|WDT|..|which|,,|VBP|..|have|,,|VBN|..|spread|,,|IN|..|around|,,|DT|..|the|,,|NN|..|world|,,|.|..|.|,,|
+S:NNS|..|Tacos|,,|VBP|..|are|,,|DT|..|a|,,|JJ|..|common|,,|NN|..|form|,,|IN|..|of|,,|NN|..|antojitos|,,||..||,,|CC|..|or|,,|NNP|..|Mexican|,,|NN|..|street|,,|NN|..|food|,,||..||,,|WDT|..|which|,,|VBP|..|have|,,|VBN|..|spread|,,|IN|..|around|,,|DT|..|the|,,|NN|..|world|,,|.|..|.|,,|P:DT|..|The|..|0|,,|NN|..|cat|..|1|,,|VBZ|..|is|..|6|,,|JJ|..|small|..|8|,,|
+S:DT|..|The|,,|NN|..|cat|,,|(|..|(|,,|NNP|..|Felis|,,|NN|..|catus|,,|)|..|)|,,|VBZ|..|is|,,|DT|..|a|,,|JJ|..|small|,,|JJ|..|carnivorous|,,|NN|..|mammal|,,|.|..|.|,,|

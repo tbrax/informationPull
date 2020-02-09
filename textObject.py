@@ -54,10 +54,11 @@ class TextObject:
                 grammarPattern.append(sentenceP)
                 sentencesFull.append(sentenceS)
             
-            if (resultType ==0):
-                results = self.Neural.runAndPlotPatterns(grammarPattern,grammarText)
-            elif (resultType ==1):
+            if (resultType == "text"):
                 results = self.Neural.runAndPlotPatterns(sentencesFull,text)
+            else:
+                results = self.Neural.runAndPlotPatterns(grammarPattern,grammarText)
+
             matchList = []
             for idx, x in enumerate(results):
                 for idy, y in enumerate(x):
