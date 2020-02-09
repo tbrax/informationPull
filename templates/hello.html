@@ -20,6 +20,11 @@ class LoadedArticle {
     this.neuralMatchType = "grammar"
     this.results = []
   }
+  addResult(data)
+  {
+    this.results.push(data)
+    displayPatternResults()
+  }
 }
 
 let currentArt = new LoadedArticle();
@@ -30,8 +35,30 @@ function seperateTextBySentences(text)
     return result
 }
 
-function displayArticlePatterns(sentenceList)
+function displayPatternResults()
 {
+    data = currentArt.results
+    var r = document.getElementById("finalResultSpan");
+    removeChildren(r)
+
+    var listElement = document.createElement('ul')
+    r.appendChild(listElement)
+    //console.log(data)
+    for (x in data)
+    {
+        var anchor = document.createElement("li");
+        var inner = document.createElement('ul')
+        anchor.appendChild(inner)
+        for (y in data[x])
+        {
+            var subItem = document.createElement('li')
+            subItem.innerHTML = data[x][y];
+            inner.appendChild(subItem)
+        }
+        
+        
+        listElement.appendChild(anchor)
+    }
 
 }
 
@@ -45,20 +72,43 @@ function showRegexReturn(data)
     console.log(data)
 }
 
+function confirmNeuralPattern(data)
+{
+    currentArt.addResult(["Neural",data[3],data[4]])
+    //console.log(data)
+}
+
 function showNeuralReturn(data)
 {
     console.log(data)
     var q = document.getElementById("questionResultSpan");
-
+    removeChildren(q)
     var listContainer = document.createElement('div')
     var listElement = document.createElement('ul')
     listContainer.appendChild(listElement)
-    for (var i = 0; i < 5; ++i) 
+    for (let x = 0; x < 5; ++x) 
     {
-        console.log(data[i])
-        var listItem = document.createElement('li')
-        listItem.innerHTML = data[i];
-        listContainer.appendChild(listItem)
+        var innerItem = document.createElement('li')
+        listElement.appendChild(innerItem)
+        var listItem = document.createElement('ul')
+        //listItem.innerHTML = data[i];
+        for (var y in data[x])
+        {
+            var subItem = document.createElement('li')
+            subItem.innerHTML = data[x][y];
+            listItem.appendChild(subItem)
+        }
+
+        ///
+        var btnWhole0 = document.createElement("button");
+        btnWhole0.innerHTML = "Add result";
+        btnWhole0.addEventListener("click", function()
+        {
+            confirmNeuralPattern(data[x])
+        });
+
+        innerItem.appendChild(listItem)
+        innerItem.appendChild(btnWhole0)
     }
     q.appendChild(listContainer)
 }
@@ -262,8 +312,6 @@ function splitSentence(sentence)
         
         anchor.appendChild(btn);
 
-
-
         var btn2 = document.createElement("button");
         btn2.className = "fixedbtn";
         //console.log(paddedValue);
@@ -287,12 +335,7 @@ function splitSentence(sentence)
 
 function selectSentence(sentence)
 {
-    
-    //displaySentence(sentence);
     getStructure(sentence);
-    //displaySentence(sentence);
-    //document.getElementById("selectedSentence").textContent = sentence; 
-    //console.log(sentence);
 }
 
 function displayPatternMatches(result)
