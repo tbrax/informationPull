@@ -18,6 +18,7 @@ class LoadedArticle {
     this.name = "";
     this.sentence = "";
     this.neuralMatchType = "grammar"
+    this.neuralMatchLength = "full"
     this.results = []
   }
   addResult(data)
@@ -35,44 +36,63 @@ function seperateTextBySentences(text)
     return result
 }
 
+function removePatternResult(indx)
+{
+    currentArt.results.splice(indx, 1); 
+    displayPatternResults()
+}
+
 function displayPatternResults()
 {
     data = currentArt.results
     var r = document.getElementById("finalResultSpan");
     removeChildren(r)
 
-    var listElement = document.createElement('ul')
+    var listElement = document.createElement('ol')
     r.appendChild(listElement)
     //console.log(data)
-    for (x in data)
+    for (let x in data)
     {
         var anchor = document.createElement("li");
-        var inner = document.createElement('ul')
-        anchor.appendChild(inner)
+        var inner = document.createElement('ul');
+        anchor.appendChild(inner);
         for (y in data[x])
         {
             var subItem = document.createElement('li')
             subItem.innerHTML = data[x][y];
-            inner.appendChild(subItem)
+            inner.appendChild(subItem);
         }
         
-        
-        listElement.appendChild(anchor)
+        var btnWhole0 = document.createElement("button");
+        btnWhole0.innerHTML = "Remove";
+
+        btnWhole0.addEventListener("click", function()
+        {
+            removePatternResult(x);
+        });
+        anchor.appendChild(btnWhole0);
+        listElement.appendChild(anchor);
     }
 
 }
 
-function confirmHandPattern(data)
-{
-    currentArt.addResult(["Hand",data[3],data[4]])
-    //console.log(data)
-}
+
 
 function showHandReturn(data)
 {
-    //currentArt.addResult(["Hand",data[3],data[4]])
     console.log(data)
-    showReturnResult(data,"Hand")
+    //currentArt.addResult(["Hand",data[3],data[4]])
+    var wordArr = [];
+    var grammarArr = [];
+    for (x in data)
+    {
+        innerArr = data[x].split(',');
+        console.log(innerArr)
+        wordArr.push(innerArr[0]+"");
+        grammarArr.push(innerArr[1]+"");
+    }
+    currentArt.addResult(['Hand',wordArr,grammarArr]);
+    //showReturnResult(data,"Hand");
 }
 
 function confirmRegexPattern(data)
@@ -114,7 +134,7 @@ function showReturnRegexResult(data,type)
         for (let y in data[x]) 
         {   
             var innerItem = document.createElement('li')
-            var listItem = document.createElement('ul')
+            var listItem = document.createElement('ol')
 
             if (data[x][y] ==false)
             {
@@ -153,7 +173,7 @@ function showReturnResult(data,type)
     var q = document.getElementById("questionResultSpan");
     removeChildren(q)
     var listContainer = document.createElement('div')
-    var listElement = document.createElement('ul')
+    var listElement = document.createElement('ol')
     listContainer.appendChild(listElement)
     //for (let x = 0; x < data.length; ++x) 
     for (let x in data) 
@@ -222,7 +242,8 @@ function checkNeuralPatterns()
 {
     $.getJSON($SCRIPT_ROOT + '/ajaxneuralmatches',
                 {
-                    valMatchGrammar: currentArt.neuralMatchType
+                    valMatchGrammar: currentArt.neuralMatchType,
+                    valMatchLength: currentArt.neuralMatchLength
                 },
                 function(data) 
                 {
@@ -353,9 +374,9 @@ function savePattern()
     url: $SCRIPT_ROOT + '/ajaxSavePattern',
     data: { valPattern: sendP, valSentence: sendS },
     traditional: true,
-    success: function(result) 
+    success: function(data) 
     {
-        showHandReturn(result)
+        showHandReturn(data.result)
     }
 });
 
@@ -458,11 +479,10 @@ function addDocumentButtons()
             checkNeuralPatterns();
         }); 
     patternButtonNeuralSpan.appendChild(btnPattern1);
-
+    ////////
     var select = document.createElement("select");
     select.id = "neuralSelect";
     select.name="neuralSelect";
-
 
     var option0 = document.createElement("option");
     option0.value=0;
@@ -483,9 +503,33 @@ function addDocumentButtons()
 
     select.appendChild(option0);
     select.appendChild(option1);
+    /////////
+    var select1 = document.createElement("select");
+    select1.id = "neuralLength";
+    select1.name="neuralLength";
+
+    var option2 = document.createElement("option");
+    option2.value=0;
+    option2.selected="";
+    option2.innerHTML= "long";
+    option2.addEventListener("click", function()
+    {
+        currentArt.neuralMatchLength = "long"
+    }); 
+
+    var option3 = document.createElement("option");
+    option3.value=1;
+    option3.innerHTML= "short";
+    option3.addEventListener("click", function()
+    {
+        currentArt.neuralMatchLength = "short"
+    }); 
+    ///
+    select1.appendChild(option2);
+    select1.appendChild(option3);
 
     patternButtonNeuralSpan.appendChild(select);
-
+    patternButtonNeuralSpan.appendChild(select1);
 }
 
 function displayDocument(result)

@@ -22,7 +22,7 @@ class TextObject:
         self.matchesRegex = []
         self.matchesNeural = []
 
-    def findNeuralMatches(self,resultType):
+    def findNeuralMatches(self,resultType,lengthType):
         if self.textLoaded:
             if not self.Neural:
                 self.Neural = NeuralClass()
@@ -42,17 +42,27 @@ class TextObject:
             patterns = self.st.getPatternObject()
             patternShort = patterns[0]
             patternFull = patterns[1]
-            sentencesFull = []
 
+            sentencesFull = []
             grammarPattern = []
-            for senList in patternFull:
-                sentenceP = ""
-                sentenceS = ""
-                for word in senList:
-                    sentenceP +=  word[0]+" " #POS
-                    sentenceS +=  word[1]+" " # Actual word
-                grammarPattern.append(sentenceP)
-                sentencesFull.append(sentenceS)
+            if (lengthType == "short"):
+                for senList in patternShort:
+                    sentenceP = ""
+                    sentenceS = ""
+                    for word in senList:
+                        sentenceP +=  word[0]+" " #POS
+                        sentenceS +=  word[1]+" " # Actual word
+                    grammarPattern.append(sentenceP)
+                    sentencesFull.append(sentenceS)
+            else:
+                for senList in patternFull:
+                    sentenceP = ""
+                    sentenceS = ""
+                    for word in senList:
+                        sentenceP +=  word[0]+" " #POS
+                        sentenceS +=  word[1]+" " # Actual word
+                    grammarPattern.append(sentenceP)
+                    sentencesFull.append(sentenceS)
             
             if (resultType == "text"):
                 results = self.Neural.runAndPlotPatterns(sentencesFull,text)
@@ -68,7 +78,8 @@ class TextObject:
                                     "Pattern Grammar":grammarPattern[idy],
                                     "Pattern Sentence":sentencesFull[idy],
                                     "Article Grammar":grammarText[idx],
-                                    "Article Text":text[idx]
+                                    "Article Text":text[idx],
+                                    "Compared":resultType
                                 }
                   # matchList.append([ y,grammarPattern[idy],sentencesFull[idy],grammarText[idx],text[idx]])
                     matchList.append(resultDict)

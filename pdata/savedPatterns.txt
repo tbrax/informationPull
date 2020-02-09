@@ -1,5 +1,6 @@
-P:DT|..|The|..|0|,,|NN|..|tortilla|..|1|,,|VBZ|..|is|..|2|,,|
-S:DT|..|The|,,|NN|..|tortilla|,,|VBZ|..|is|,,|RB|..|then|,,|VBN|..|folded|,,|IN|..|around|,,|DT|..|the|,,|NN|..|filling|,,|CC|..|and|,,|VBN|..|eaten|,,|IN|..|by|,,|NN|..|hand|,,|.|..|.|,,|
-P:NNS|..|Tacos|..|0|,,|VBP|..|are|..|1|,,|JJ|..|common|..|3|,,|
-S:NNS|..|Tacos|,,|VBP|..|are|,,|DT|..|a|,,|JJ|..|common|,,|NN|..|form|,,|IN|..|of|,,|NN|..|antojitos|,,||..||,,|CC|..|or|,,|NNP|..|Mexican|,,|NN|..|street|,,|NN|..|food|,,||..||,,|WDT|..|which|,,|VBP|..|have|,,|VBN|..|spread|,,|IN|..|around|,,|DT|..|the|,,|NN|..|world|,,|.|..|.|,,|P:DT|..|The|..|0|,,|NN|..|cat|..|1|,,|VBZ|..|is|..|6|,,|JJ|..|small|..|8|,,|
+P:DT|..|A|..|0|,,|NN|..|taco|..|1|,,|VBZ|..|is|..|15|,,|DT|..|a|..|16|,,|JJ|..|Mexican|..|18|,,|NN|..|dish|..|19|,,|
+S:DT|..|A|,,|NN|..|taco|,,|(|..|(|,,|PRP|..|US|,,|:|..|:|,,||..||,,|NNP|..|UK|,,|:|..|:|,,||..||,,|JJ|..|Spanish|,,|:|..|:|,,|NN|..|[|,,|NNP|..|ˈtako|,,|NNP|..|]|,,|)|..|)|,,|VBZ|..|is|,,|DT|..|a|,,|JJ|..|traditional|,,|JJ|..|Mexican|,,|NN|..|dish|,,|NN|..|consisting|,,|IN|..|of|,,|DT|..|a|,,|JJ|..|small|,,|JJ|..|hand-sized|,,|NN|..|corn|,,|CC|..|or|,,|NN|..|wheat|,,|NN|..|tortilla|,,|VBD|..|topped|,,|IN|..|with|,,|DT|..|a|,,|NN|..|filling|,,|.|..|.|,,|
+P:DT|..|The|..|0|,,|NN|..|cat|..|1|,,|VBZ|..|is|..|6|,,|DT|..|a|..|7|,,|JJ|..|small|..|8|,,|NN|..|mammal|..|10|,,|
 S:DT|..|The|,,|NN|..|cat|,,|(|..|(|,,|NNP|..|Felis|,,|NN|..|catus|,,|)|..|)|,,|VBZ|..|is|,,|DT|..|a|,,|JJ|..|small|,,|JJ|..|carnivorous|,,|NN|..|mammal|,,|.|..|.|,,|
+P:DT|..|A|..|0|,,|NN|..|juvenile|..|1|,,|NN|..|cat|..|2|,,|VBZ|..|is|..|3|,,|VBN|..|referred|..|4|,,|TO|..|to|..|5|,,|IN|..|as|..|6|,,|DT|..|a|..|7|,,|NN|..|kitten|..|8|,,|
+S:DT|..|A|,,|NN|..|juvenile|,,|NN|..|cat|,,|VBZ|..|is|,,|VBN|..|referred|,,|TO|..|to|,,|IN|..|as|,,|DT|..|a|,,|NN|..|kitten|,,|.|..|.|,,|
