@@ -82,13 +82,13 @@ function showHandReturn(data)
 {
 
     //currentArt.addResult(["Hand",data[3],data[4]])
-    var wordArr = [];
-    var grammarArr = [];
+    var wordArr = "";
+    var grammarArr = "";
     for (x in data)
     {
         innerArr = data[x].split(',');
-        wordArr.push(innerArr[0]+"");
-        grammarArr.push(innerArr[1]+"");
+        wordArr+=innerArr[0]+" ";
+        grammarArr+=innerArr[1]+" ";
     }
     currentArt.addResult(['Hand',wordArr,grammarArr]);
     //showReturnResult(data,"Hand");
