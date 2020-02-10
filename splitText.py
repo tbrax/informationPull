@@ -11,7 +11,6 @@ class SplitText:
         self.patternSaveFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\patterns.txt"
         self.patternSaveFile2 = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\savedPatterns.txt"
         self.patterns = []
-        self.loadPatterns()
 
     def getNeuralPatterns(self):
         return 0
@@ -48,6 +47,28 @@ class SplitText:
                     fullObj.append(wordArr)
         return [patternObj,fullObj]
 
+    def saveRegexPattern(self,patternList,fullSentenceList):
+        pString = ""
+        sString = ""
+        for idx,value in enumerate(patternList):
+            x = value.split(",")
+            #pString += ".*"
+            pString += ".*?({0})".format(x[1])
+            if (idx == len(patternList)-1):
+                pString += ".*?"
+        for idx,value in enumerate(fullSentenceList):
+            x = value.split(",")
+            #sString += " "
+            sString += ".*?({0})".format(x[1])
+            if (idx == len(fullSentenceList)-1):
+                sString += ".*?"
+
+        f = open(self.patternSaveFile, "a",encoding="utf-8")
+        f.write("P:{0}".format(pString))
+        f.write("\n")
+        f.write("S:{0}".format(sString))
+        f.write("\n")
+
     
     def savePattern(self,patternList,fullSentenceList):
         #print(patternList)
@@ -70,11 +91,19 @@ class SplitText:
 
 
     #Load Regex Patterns from file
-    def loadPatterns(self):
+    def loadRegexPatterns(self):
+        ps = []
         with open(self.patternFile, "r", encoding="utf-8") as f:
             for line in f:
                 if (line.startswith('P:')):
-                    self.patterns.append(line[2:].strip())
+                    ps.append(line[2:].strip())
+        return ps
+
+    
+    def getRegexPatterns(self):
+        #ps = self.getPatternObject()
+        #print(ps)
+        return self.loadRegexPatterns()
 
     #Turn word list to POS tokens
 
@@ -119,10 +148,11 @@ class SplitText:
             return givenList.index(item)
         except ValueError:
             return -1
+
     #Compare sentence against all patterns and print if match
     def checkAllPatterns(self,nltkTag, newSentence, sentenceLocationList,originalSentence):
         listOfMatches = []
-        for pattern in self.patterns:
+        for pattern in self.getRegexPatterns():
             result = self.checkPattern(pattern, nltkTag,newSentence, sentenceLocationList,originalSentence)
             if (result):
                 listOfMatches.append(result)
@@ -134,15 +164,21 @@ class SplitText:
     def checkPattern(self,pattern, nltkTag, newSentence, sentenceLocationList,originalSentence):
 
         result = re.match(pattern, newSentence)
-        #print(result)
-        #print(result.groups())
+        
         if result is None:
             self.sentenceCount += 1
             return False
         else:
+            #print(result)
+            #print(result.groups())
             showStr = ""
             for counter, value in enumerate(result.groups()):
+                #print(value)
+                
                 gp = counter+1
+                #print(result.span(gp))
+                #print(nltkTag)
+                #wordNum = self.findInList(posList, result.span(gp)[0])
                 wordNum = self.findInList(sentenceLocationList, result.span(gp)[0])
                 showStr += nltkTag[wordNum][0] + " "
             resultDict = {  

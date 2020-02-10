@@ -50,7 +50,7 @@ function displayPatternResults()
 
     var listElement = document.createElement('ol')
     r.appendChild(listElement)
-    //console.log(data)
+
     for (let x in data)
     {
         var anchor = document.createElement("li");
@@ -80,14 +80,13 @@ function displayPatternResults()
 
 function showHandReturn(data)
 {
-    console.log(data)
+
     //currentArt.addResult(["Hand",data[3],data[4]])
     var wordArr = [];
     var grammarArr = [];
     for (x in data)
     {
         innerArr = data[x].split(',');
-        console.log(innerArr)
         wordArr.push(innerArr[0]+"");
         grammarArr.push(innerArr[1]+"");
     }
@@ -98,7 +97,6 @@ function showHandReturn(data)
 function confirmRegexPattern(data)
 {
     currentArt.addResult(['Regex',data['Matching'],data['Regex Matched']])
-    //console.log(data)
 }
 
 function showRegexReturn(data)
@@ -110,12 +108,10 @@ function showRegexReturn(data)
 function confirmNeuralPattern(data)
 {
     currentArt.addResult(["Neural",data['Article Text'],data['Article Grammar']])
-    //console.log(data)
 }
 
 function showNeuralReturn(data)
 {
-    //console.log(data)
     showReturnResult(data,"Neural")
 }
 
@@ -125,8 +121,9 @@ function showReturnRegexResult(data,type)
     var q = document.getElementById("questionResultSpan");
     removeChildren(q)
     var listContainer = document.createElement('div')
-    var listElement = document.createElement('ul')
+    var listElement = document.createElement('ol')
     listContainer.appendChild(listElement)
+    var isItem = false
     for (let x in data) 
     {
         var isValue = true
@@ -149,6 +146,7 @@ function showReturnRegexResult(data,type)
 
             if (isValue != false)
             {
+                isItem = true
                 listElement.appendChild(innerItem)
                 var btnWhole0 = document.createElement("button");
                 btnWhole0.innerHTML = "Add result";
@@ -165,6 +163,14 @@ function showReturnRegexResult(data,type)
             }
         }
     }
+
+    if (!isItem)
+    {
+        var anchor = document.createElement("a");
+        anchor.innerHTML = "No Regex Matches";
+        listContainer.appendChild(anchor)
+    }
+
     q.appendChild(listContainer)
 }
 
@@ -184,7 +190,6 @@ function showReturnResult(data,type)
         //listItem.innerHTML = data[i];
         for (let [key, value] of Object.entries(data[x])) 
         {
-            //console.log(`${key}: ${value}`);
             var subItem = document.createElement('li')
             subItem.innerHTML = `${key}: ${value}`;
             listItem.appendChild(subItem)
@@ -339,7 +344,6 @@ function addWordToConstruction(word,grammar,index)
 {
     currentArt.sentenceConstruction.push([word,grammar,index]);
     updateConstruction(currentArt.sentenceConstruction);
-    //console.log(sentenceConstruction);
 }
 
 
@@ -362,24 +366,60 @@ function arrayToString(arr)
     }
     return temp
 }
-function savePattern()
+
+function saveRegexPattern()
 {
-    //var sendP = getColumn(currentArt.sentenceConstruction,1);
-    //var sendS = getColumn(currentArt.sentence,1); 
     var sendP = currentArt.sentenceConstruction;
     var sendS = currentArt.sentence;
-    //console.log(sendP);
-    //console.log(sendS);
+
     $.ajax({
     url: $SCRIPT_ROOT + '/ajaxSavePattern',
-    data: { valPattern: sendP, valSentence: sendS },
+    data: { valPattern: sendP,
+            valSentence: sendS,
+            valSaveType: "Regex" 
+            },
+    traditional: true,
+    success: function(data) 
+    {
+        //showHandReturn(data.result)
+    }
+});
+}
+
+function saveNeuralPattern()
+{
+    var sendP = currentArt.sentenceConstruction;
+    var sendS = currentArt.sentence;
+    $.ajax({
+    url: $SCRIPT_ROOT + '/ajaxSavePattern',
+    data: { valPattern: sendP,
+            valSentence: sendS,
+            valSaveType: "Neural" 
+            },
+    traditional: true,
+    success: function(data) 
+    {
+        //showHandReturn(data.result)
+    }
+});
+}
+
+function savePattern()
+{
+    var sendP = currentArt.sentenceConstruction;
+    var sendS = currentArt.sentence;
+    $.ajax({
+    url: $SCRIPT_ROOT + '/ajaxSavePattern',
+    data: { valPattern: sendP,
+            valSentence: sendS,
+            valSaveType: "Show" 
+            },
     traditional: true,
     success: function(data) 
     {
         showHandReturn(data.result)
     }
 });
-
 }
 
 
@@ -402,18 +442,32 @@ function splitSentence(sentence)
         {
             addWholeConstruction(sentence)
         });
-    sen2.appendChild(btnWhole0);
+    
     var btnWhole1 = document.createElement("button");
-        btnWhole1.innerHTML = "Save Pattern";
+        btnWhole1.innerHTML = "Add Neural Pattern";
         btnWhole1.addEventListener("click", function()
         {
-            savePattern()
+            saveNeuralPattern()
         });
 
+    var btnWhole2 = document.createElement("button");
+    btnWhole2.innerHTML = "Add Regex Pattern";
+    btnWhole2.addEventListener("click", function()
+    {
+        saveRegexPattern()
+    });
+
+    var btnWhole3 = document.createElement("button");
+    btnWhole3.innerHTML = "Show Pattern";
+    btnWhole3.addEventListener("click", function()
+    {
+        savePattern()
+    });
+    
+    sen2.appendChild(btnWhole0);
     sen2.appendChild(btnWhole1);
-    //console.log(sentence);
-    //(sentence)
-    //var words = sentence.split(" ");
+    sen2.appendChild(btnWhole2);
+    sen2.appendChild(btnWhole3);
     for (let i in sentence) 
     {
         let val0 = sentence[i][0];
@@ -426,7 +480,6 @@ function splitSentence(sentence)
 
         var btn2 = document.createElement("button");
         btn2.className = "fixedbtn";
-        //console.log(paddedValue);
         btn2.innerHTML = val1;
         anchor1.appendChild(btn2);
 
@@ -452,7 +505,7 @@ function selectSentence(sentence)
 
 function displayPatternMatches(result)
 {
-    console.log(result)
+
 }
 
 
@@ -536,9 +589,7 @@ function displayDocument(result)
 {
     currentArt.name = result[0]
     strs = result[1]
-    //console.log(result);
-    //var list = document.createElement("ul");
-    //strs = seperateTextBySentences(result)
+
     addDocumentButtons()
     
     var list = document.getElementById("listAnchor");
@@ -625,10 +676,10 @@ function displayDocument(result)
     <p>
         <span id="constructedGrammar"> </span>      
     </p>
-    <hr>
     <p>
         <span id="otherButtons"> </span>
     </p>
+    <hr>
     <p>
         <span id="selectedSentence"> </span>
     </p>

@@ -1,2 +1,5 @@
 P:.*(NNP)+.*(VBZ)+.*(NNS)+
-
+P:DT NN VBZ DT JJ NN
+S:DT NN ( NNP NN ) VBZ DT JJ JJ NN .
+P:.*?(DT).*?(NN).*?(VBZ).*?(DT).*?(NN).*?
+S:.*?(DT).*?(NN).*?(().*?(NNP).*?(NN).*?()).*?(VBZ).*?(DT).*?(JJ).*?(JJ).*?(NN).*?(.).*?
