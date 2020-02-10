@@ -29,8 +29,11 @@ class NeuralClass:
         textEmbed = self.embed(text)
         cross = np.inner(textEmbed, patternEmbed)
         #print(cross)
-        #self.plot_similarity(text,patterns, textEmbed,patternEmbed, cross)
-        #plt.show()
+
+        showPlt = False
+        if (showPlt):
+            self.plot_similarity(text,patterns, textEmbed,patternEmbed, cross)
+            plt.show()
         return cross
 
     def plot_similarity(self, labels0,labels1, features0,features1, corr):
