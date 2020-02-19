@@ -36,7 +36,7 @@ def analyzeRegex(sentence):
 
 def findPatternMatchesInArticle(articleName):
     art = gt.getArticle(articleName)
-    matches = st.findRegexMatches(art[1])
+    matches = tt.findRegexMatches(art[1])
     return matches
 
 

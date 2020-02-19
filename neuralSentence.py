@@ -51,9 +51,10 @@ class NeuralClass:
         g.set_yticklabels(labels0, rotation=0)
         g.set_title("Semantic Textual Similarity")
 
-#def run_and_plot(messages_):
-#   message_embeddings_ = embed(messages_)
-#   plot_similarity(messages_, message_embeddings_, 90)
+    def run_and_plot(self,messages_):
+        message_embeddings_ = self.embed(messages_)
+        cross = np.inner(message_embeddings_, message_embeddings_)
+        self.plot_similarity(messages_,messages_, message_embeddings_, message_embeddings_, cross)
 
 
 
@@ -64,7 +65,6 @@ class NeuralClass:
 
 #    runAndPlotPatterns(patterns,text)
     
-
 
 def main():
     messages = [
@@ -87,8 +87,8 @@ def main():
     "How old are you?",
     "what is your age?",
     ]
-
-    #run_and_plot(messages)
+    ts = NeuralClass()
+    ts.run_and_plot(messages)
     plt.show()
 
 

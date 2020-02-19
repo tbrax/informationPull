@@ -11,6 +11,12 @@ class SplitText:
         self.patternSaveFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\patterns.txt"
         self.patternSaveFile2 = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\savedPatterns.txt"
         self.patterns = []
+        self.nameListRegex = [
+                                "Matching Text",
+                                "Regex Matched",
+                                "Article Tokens",
+                                "Article Sentence"
+                            ]
 
     def getNeuralPatterns(self):
         return 0
@@ -182,10 +188,10 @@ class SplitText:
                 wordNum = self.findInList(sentenceLocationList, result.span(gp)[0])
                 showStr += nltkTag[wordNum][0] + " "
             resultDict = {  
-                            "Matching":showStr,
-                            "Regex Matched":pattern,
-                            "Full Tokens":newSentence,
-                            "Full Matching":originalSentence
+                            self.nameListRegex[0]:showStr,
+                            self.nameListRegex[1]:pattern,
+                            self.nameListRegex[2]:newSentence,
+                            self.nameListRegex[3]:originalSentence
                             }
             #return {showStr,pattern,newSentence,originalSentence}
             return resultDict
@@ -226,15 +232,11 @@ class SplitText:
             return False
         return matchList
 
-
     def readFile(self,path):
         f=open(path, "r",encoding="utf8")
         text = f.read()
         return text
         
-
-
-
 def main():
     sc = SplitText()
     name = "bird"

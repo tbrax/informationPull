@@ -15,12 +15,57 @@ class TextObject:
         self.textLoaded = False
         self.Neural = False
         self.st = SplitText()
+        self.nameListNeural = [
+                                "Value",
+                                "Pattern Grammar",
+                                "Pattern Sentence",
+                                "Article Grammar",
+                                "Article Text",
+                                "Compared"
+                            ]
+        self.notFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\notlist.txt"
+        self.notList = []
+        self.load()
+
+    def load(self):
+        f=open(self.notFile, "r",encoding="utf8")
+        ns = f.readlines()
+        for x in ns:
+            self.notList.append(x.strip())
 
     def reset(self):
         self.sentences = []
         self.matchesCrafted = []
         self.matchesRegex = []
         self.matchesNeural = []
+    #Pattern Sentence
+
+    def isTroubleSome(self,sentence):
+        checkSentence = sentence.lower()
+        for x in self.notList:
+            if x in checkSentence:
+                return True 
+        return False
+
+    def removeTroublesomeSentencesRegex(self,matchList,nameToCheck):
+        for x in matchList:
+            if (len(x) > 0) and (x[0] != False):
+                for y in x:
+                    if self.isTroubleSome(y[nameToCheck]):
+                        x.remove(y)
+        return matchList
+
+    def removeTroublesomeSentencesNeural(self,matchList,nameToCheck):
+        for x in matchList:
+            if self.isTroubleSome(x[nameToCheck]):
+                matchList.remove(x)
+        return matchList
+
+
+    def findRegexMatches(self,inputText):
+        rt = self.st.findRegexMatches(inputText)
+        #print(rt[0])
+        return self.removeTroublesomeSentencesRegex(rt,self.st.nameListRegex[3])
 
     def findNeuralMatches(self,resultType,lengthType):
         if self.textLoaded:
@@ -74,17 +119,18 @@ class TextObject:
                 for idy, y in enumerate(x):
 
                     resultDict = {
-                                    "Value":y,
-                                    "Pattern Grammar":grammarPattern[idy],
-                                    "Pattern Sentence":sentencesFull[idy],
-                                    "Article Grammar":grammarText[idx],
-                                    "Article Text":text[idx],
-                                    "Compared":resultType
+                                    self.nameListNeural[0]:y,
+                                    self.nameListNeural[1]:grammarPattern[idy],
+                                    self.nameListNeural[2]:sentencesFull[idy],
+                                    self.nameListNeural[3]:grammarText[idx],
+                                    self.nameListNeural[4]:text[idx],
+                                    self.nameListNeural[5]:resultType
                                 }
                   # matchList.append([ y,grammarPattern[idy],sentencesFull[idy],grammarText[idx],text[idx]])
                     matchList.append(resultDict)
-                    
-            return self.convertListString(self.viewMatches(matchList))
+            rt = self.convertListString(self.viewMatches(matchList))
+            #print(rt[0])
+            return self.removeTroublesomeSentencesNeural(rt,self.nameListNeural[4])
 
     def convertListString(self,data):
         for x in data:
@@ -103,11 +149,8 @@ class TextObject:
         self.title = title
         self.sentences = sentences
        
-
-
 def main():
     return True
-
 
 if __name__== "__main__":
     main()

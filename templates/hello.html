@@ -1,6 +1,4 @@
 
-
-
 <script type=text/javascript>
     $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
   </script>
@@ -10,7 +8,6 @@
 </script>
 <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
 <script type=text/javascript>
-
 
 class LoadedArticle {
   constructor() {
@@ -76,8 +73,6 @@ function displayPatternResults()
 
 }
 
-
-
 function showHandReturn(data)
 {
 
@@ -90,13 +85,13 @@ function showHandReturn(data)
         wordArr+=innerArr[0]+" ";
         grammarArr+=innerArr[1]+" ";
     }
-    currentArt.addResult(['Hand',wordArr,grammarArr]);
+    currentArt.addResult(['Added by Hand',wordArr,grammarArr]);
     //showReturnResult(data,"Hand");
 }
 
 function confirmRegexPattern(data)
 {
-    currentArt.addResult(['Regex',data['Matching'],data['Regex Matched']])
+    currentArt.addResult(['Added by Regex',data['Matching'],data['Regex Matched']])
 }
 
 function showRegexReturn(data)
@@ -107,14 +102,13 @@ function showRegexReturn(data)
 
 function confirmNeuralPattern(data)
 {
-    currentArt.addResult(["Neural",data['Article Text'],data['Article Grammar']])
+    currentArt.addResult(["Added by Neural",data['Article Text'],data['Article Grammar']])
 }
 
 function showNeuralReturn(data)
 {
     showReturnResult(data,"Neural")
 }
-
 
 function showReturnRegexResult(data,type)
 {
@@ -181,13 +175,11 @@ function showReturnResult(data,type)
     var listContainer = document.createElement('div')
     var listElement = document.createElement('ol')
     listContainer.appendChild(listElement)
-    //for (let x = 0; x < data.length; ++x) 
     for (let x in data) 
     {
         var innerItem = document.createElement('li')
         listElement.appendChild(innerItem)
         var listItem = document.createElement('ul')
-        //listItem.innerHTML = data[i];
         for (let [key, value] of Object.entries(data[x])) 
         {
             var subItem = document.createElement('li')
@@ -195,13 +187,6 @@ function showReturnResult(data,type)
             listItem.appendChild(subItem)
 
         }
-        /*for (var y in data[x])
-        {
-            var subItem = document.createElement('li')
-            subItem.innerHTML = data[x][y].key;
-            listItem.appendChild(subItem)
-        }*/
-        ///
         var btnWhole0 = document.createElement("button");
         btnWhole0.innerHTML = "Add result";
         if (type == "Neural")
@@ -257,7 +242,6 @@ function checkNeuralPatterns()
                 });
 }
 
-
 function getArticlePatterns(articleName)
 {
     $.getJSON($SCRIPT_ROOT + '/ajaxReturnPatterns',
@@ -300,7 +284,6 @@ function removeChildren(element)
     }
 }
 
-
 function resetConstructionImage()
 {
     var sen = document.getElementById("constructedSentence");
@@ -332,6 +315,7 @@ function updateConstruction(c)
         sen1.appendChild(btn1);
     }
 }
+
 function addWholeConstruction(sentence)
 {
     for(let i in sentence)
@@ -345,7 +329,6 @@ function addWordToConstruction(word,grammar,index)
     currentArt.sentenceConstruction.push([word,grammar,index]);
     updateConstruction(currentArt.sentenceConstruction);
 }
-
 
 function getColumn(array,col)
 {
@@ -421,8 +404,6 @@ function savePattern()
     }
 });
 }
-
-
 
 function splitSentence(sentence)
 {
@@ -507,9 +488,6 @@ function displayPatternMatches(result)
 {
 
 }
-
-
-
 
 function addDocumentButtons()
 {
@@ -605,14 +583,6 @@ function displayDocument(result)
         {
             selectSentence(strs[i]);
         }); 
-        /*
-        anchor.onclick = function () 
-        {
-            var thisName = this.id;
-            var res = thisName.split("articleSentence")[1];
-            var resNum = parseInt(res);
-            selectSentence(strs[resNum]);
-        };*/
 
         var elem = document.createElement("li");
         elem.appendChild(anchor);
@@ -665,10 +635,6 @@ function displayDocument(result)
         <span id="checkPatternNeuralSpan"> </span>      
     </p>
     
-    <!--<p>
-        <textarea size=25 name=analyzeRegex cols="30" rows="5"></textarea>
-        <a href=# id=calcAnalyzeRegex>Analyze Regex</a>
-    </p>-->
     <button type="button" onclick="resetConstruction()">Reset Sentence</button> 
     <p>
         <span id="constructedSentence"> </span>      
