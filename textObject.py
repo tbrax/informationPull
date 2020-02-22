@@ -15,6 +15,7 @@ class TextObject:
         self.textLoaded = False
         self.Neural = False
         self.st = SplitText()
+        self.gt = GetText()
         self.nameListNeural = [
                                 "Value",
                                 "Pattern Grammar",
@@ -39,6 +40,39 @@ class TextObject:
         self.matchesRegex = []
         self.matchesNeural = []
     #Pattern Sentence
+
+    def getArticle(self,name):
+        article = self.gt.getArticle(name)
+        if article != False:
+            if len(article) > 0:
+                title = article[0]
+                text = article[1]
+                sentences = self.st.textToSentenceList(text)
+                self.saveSentences(title,sentences)
+                return [title,sentences]
+        return False
+
+    def splitSentencesInSectionList(self,articleSections):
+        for x in articleSections:
+            tx = x["Text"]
+            sentences = self.st.textToSentenceList(tx)
+            txList = []
+            for y in sentences:
+                txList.append(y)
+            x["Text"] = txList
+        return articleSections
+
+    def getArticleSectionList(self,name):
+        articleSections = self.gt.getArticleSectionList(name)
+        if articleSections != False:
+            if len(articleSections) > 0:
+                title = articleSections[0]
+                textDict = articleSections[1]
+                sentences = self.splitSentencesInSectionList(textDict)
+                #sentences = textDict
+                self.saveSentences(title,sentences)
+                return [title,sentences]
+        return False
 
     def isTroubleSome(self,sentence):
         checkSentence = sentence.lower()

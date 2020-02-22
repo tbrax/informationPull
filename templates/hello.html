@@ -570,23 +570,46 @@ function displayDocument(result)
 
     addDocumentButtons()
     
-    var list = document.getElementById("listAnchor");
-    removeChildren(list);
+    var listHold = document.getElementById("listAnchor");
+    removeChildren(listHold);
     
+    var list = document.createElement("ol");
+    listHold.appendChild(list);
+    console.log(strs);
     for (let i in strs) 
     {
-        var anchor = document.createElement("a");
-        anchor.href = "#";
-        anchor.innerText = strs[i];
-        anchor.id = "articleSentence" + i;
-        anchor.addEventListener("click", function()
+        for (let j in strs[i].Text)
         {
-            selectSentence(strs[i]);
-        }); 
+            var innerItem = document.createElement('li')
+            var anchor = document.createElement("a");
+            anchor.href = "#";
+            let t0 = strs[i].Title;
+            let t1 = strs[i].Text[j];
 
-        var elem = document.createElement("li");
-        elem.appendChild(anchor);
-        list.appendChild(elem);
+            //txt =(`Sections: ${t0} Text:${t1}`);
+            //anchor.innerText = txt;
+
+            var elem0 = document.createElement("li"); 
+            var elem1 = document.createElement("li");
+            elem0.innerText = t0
+            anchor.innerText = t1
+            
+
+            //anchor.id = "articleSentence" + i;
+            anchor.addEventListener("click", function()
+            {
+                selectSentence(t1);
+            }); 
+
+            elem1.appendChild(anchor);
+
+            var elemtt = document.createElement("ul");
+            elemtt.appendChild(elem0);
+            elemtt.appendChild(elem1);
+            innerItem.appendChild(elemtt);
+            list.appendChild(innerItem);
+        }
+        
     }
 }
     $(function() 

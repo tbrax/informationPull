@@ -21,14 +21,16 @@ def savePattern(pattern,fullSentence,stype):
         st.savePattern(pattern,fullSentence)
 
 def checkArticle(name):
-
-    article = gt.getArticle(name)
-    title = article[0]
-    text = article[1]
-    sentences = st.textToSentenceList(text)
-    tt.saveSentences(title,sentences)
-
-    return [title,sentences]
+    return tt.getArticleSectionList(name)
+    #article = gt.getArticle(name)
+    #if article != False:
+    #    if len(article) > 0:
+    #        title = article[0]
+    #        text = article[1]
+    #        sentences = st.textToSentenceList(text)
+    #        tt.saveSentences(title,sentences)
+    #        return [title,sentences]
+    #return False
     
 
 def analyzeRegex(sentence):
