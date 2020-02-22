@@ -41,6 +41,15 @@ class TextObject:
         self.matchesNeural = []
     #Pattern Sentence
 
+    def sentenceTokenDisplay(self,sentence):
+        return self.st.sentenceTokenDisplay(sentence)
+
+    def sentenceTokenDisplayList(self,sentenceList):
+        ls = []
+        for x in sentenceList:
+            ls.append(self.st.sentenceTokenDisplay(x))
+        return ls
+
     def getArticle(self,name):
         article = self.gt.getArticle(name)
         if article != False:

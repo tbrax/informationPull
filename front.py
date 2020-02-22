@@ -34,7 +34,10 @@ def checkArticle(name):
     
 
 def analyzeRegex(sentence):
-    return st.sentenceTokenDisplay(sentence)
+    return tt.sentenceTokenDisplay(sentence)
+
+def analyzeRegexList(sentenceList):
+    return tt.sentenceTokenDisplayList(sentenceList)
 
 def findPatternMatchesInArticle(articleName):
     art = gt.getArticle(articleName)
@@ -86,7 +89,8 @@ def ajaxGetArticle():
 @app.route('/ajaxAnalyzeRegex')
 def ajaxAnalyzeRegex():
     a = request.args.get('valSentenceToAnalyze', 0)
-    return jsonify(result=analyzeRegex(a))
+    b = request.args.getlist('valSectionToAnalyze', None)
+    return jsonify(result0=analyzeRegex(a),result1=analyzeRegexList(b))
 
 @app.route("/", methods = ['GET'])
 def mainpage():
