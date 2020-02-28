@@ -90,7 +90,8 @@ def ajaxGetArticle():
 def ajaxAnalyzeRegex():
     a = request.args.get('valSentenceToAnalyze', 0)
     b = request.args.getlist('valSectionToAnalyze', None)
-    return jsonify(result0=analyzeRegex(a),result1=analyzeRegexList(b))
+    graph = "TODO"
+    return jsonify(result0=analyzeRegex(a),result1=analyzeRegexList(b),graph=graph)
 
 @app.route("/", methods = ['GET'])
 def mainpage():

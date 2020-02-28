@@ -5,3 +5,4 @@ seldom
 hardly 
 rarely 
 unlikely 
+rather than 

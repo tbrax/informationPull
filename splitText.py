@@ -29,6 +29,8 @@ class SplitText:
         text = self.readFileLines(self.patternSaveFile2)
         patternObj = []
         fullObj = []
+        depObj = []
+        headObj = []
         for line in text:
             if (line.startswith('P:')):
                 reduced = line[2:].strip()
@@ -51,7 +53,27 @@ class SplitText:
                         wordArr.append(iSep)
                 if len(wordArr) > 0:
                     fullObj.append(wordArr)
-        return [patternObj,fullObj]
+            elif (line.startswith('D:')):
+                full = line[2:].strip()
+                fSep = full.split("|,,|")
+                wordArr = []
+                for item in fSep:
+                    if item is not "":
+                        iSep = item.split("|..|")
+                        wordArr.append(iSep)
+                if len(wordArr) > 0:
+                    depObj.append(wordArr)
+            elif (line.startswith('H:')):
+                full = line[2:].strip()
+                fSep = full.split("|,,|")
+                wordArr = []
+                for item in fSep:
+                    if item is not "":
+                        iSep = item.split("|..|")
+                        wordArr.append(iSep)
+                if len(wordArr) > 0:
+                    headObj.append(wordArr)
+        return [patternObj,fullObj,depObj,headObj]
 
     def saveRegexPattern(self,patternList,fullSentenceList):
         pString = ""
@@ -77,8 +99,6 @@ class SplitText:
 
     
     def savePattern(self,patternList,fullSentenceList):
-        #print(patternList)
-        #(fullSentenceList)
         pString = ""
         sString = ""
         for i in patternList:
@@ -107,8 +127,6 @@ class SplitText:
 
     
     def getRegexPatterns(self):
-        #ps = self.getPatternObject()
-        #print(ps)
         return self.loadRegexPatterns()
 
     #Turn word list to POS tokens
@@ -227,7 +245,6 @@ class SplitText:
         sentences = sent_tokenize(inputText)
         for x in sentences:
             matchList.append(self.checkSentenceRegex(x))
-        #print(matchList)
         if (not matchList):
             return False
         return matchList
