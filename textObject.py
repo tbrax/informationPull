@@ -44,7 +44,7 @@ class TextObject:
         self.matchesNeural = []
     #Pattern Sentence
 
-    def getGraphHTML(self,sentence):
+    def getGraph(self,sentence):
         #return self.ch.treeHTML(sentence)
         return self.ch.displacyService(sentence)
 

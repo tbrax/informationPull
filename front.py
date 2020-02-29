@@ -6,8 +6,8 @@ from textObject import TextObject
 app = Flask(__name__)
 tt = TextObject()
 
-def getGraphHTML(sentence):
-    return tt.getGraphHTML(sentence)
+def getGraph(sentence):
+    return tt.getGraph(sentence)
 
 def findNeuralMatchesInArticle(resultType,resultLength):
     rt = resultType[0]
@@ -87,11 +87,16 @@ def ajaxGetArticle():
     #b = request.args.get('b', 0, type=int)
     return jsonify(result=checkArticle(a))
 
+@app.route('/ajaxGraph')
+def ajaxGraph():
+    a = request.args.get('valSentenceToAnalyze', 0)
+    return jsonify(graph=getGraph(a))
+
 @app.route('/ajaxAnalyzeRegex')
 def ajaxAnalyzeRegex():
     a = request.args.get('valSentenceToAnalyze', 0)
     b = request.args.getlist('valSectionToAnalyze', None)
-    return jsonify(result0=analyzeRegex(a),result1=analyzeRegexList(b),graph=getGraphHTML(a))
+    return jsonify(result0=analyzeRegex(a),result1=analyzeRegexList(b),graph=0)
 
 @app.route("/", methods = ['GET'])
 def mainpage():

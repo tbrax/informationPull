@@ -9,6 +9,34 @@ constructor() {
     this.results = []
     this.displacy = null
 }
+getSentenceString()
+{
+    var sen ="";
+    for (let x in this.sentence)
+    {
+        sen += this.sentence[x][0];
+        if (x !=this.sentence.length-1)
+        {
+            sen += " ";
+        }
+    }
+    return sen;
+}
+
+getSentenceConstructionString()
+{
+    var sen ="";
+    for (let x in this.sentenceConstruction)
+    {
+        sen += this.sentenceConstruction[x][0];
+        if (x !=this.sentenceConstruction.length-1)
+        {
+            sen += " ";
+        }
+    }
+    return sen;
+}
+
 addResult(data)
 {
     this.results.push(data)
@@ -427,19 +455,61 @@ success: function(data)
 });
 }
 
-function makeGraph(place,graph)
+function makeGraph(graph)
 {
     currentArt.displacy.render(parse=graph)
 }
 
-function parse(place,graph) {
-    currentArt.displacy.render(parse=graph)
+function ajaxGetGraph(sentence)
+{
+    $.ajax({
+            url: $SCRIPT_ROOT + '/ajaxGraph',
+            data: { valSentenceToAnalyze: sentence,
+                    },
+                traditional: true,
+            success: function(data) 
+            {
+                makeGraph(data.graph);
+                //currentArt.displacy.render(parse=data.graph)
+            }
+            });
 }
+
+
+
+function hideGraph()
+{
+    var g = document.getElementById("selectedGraph");
+    g.style.display = "none";
+}
+
+function showGraph()
+{
+    var g = document.getElementById("selectedGraph");
+    g.style.display = "inline";
+}
+
+
+function showSentenceGraph()
+{
+    showGraph();
+    console.log(currentArt.getSentenceString());
+    ajaxGetGraph(currentArt.getSentenceString());
+}
+
+function showConstructedGraph()
+{
+    showGraph();
+    console.log(currentArt.getSentenceConstructionString());
+    ajaxGetGraph(currentArt.getSentenceConstructionString());
+}
+
+
 
 function splitSentence(section,sentence,graph)
 {
     //parse(sentence)
-    makeGraph("selectedGraph",graph);
+    
     currentArt.sentence = sentence
     var sen0 = document.getElementById("selectedSentence");
     removeChildren(sen0);
