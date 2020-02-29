@@ -15,10 +15,14 @@ def findNeuralMatchesInArticle(resultType,resultLength):
     results = tt.findNeuralMatches(rt,rl)
     return results
 
+def findTreeMatchesInArticle():
+    results = tt.findTreeMatches()
+    return results
+
 def savePattern(pattern,fullSentence,stype):
-    if (stype[0] == "Regex"):
+    if stype[0] == 'Regex':
         tt.st.saveRegexPattern(pattern,fullSentence)
-    elif (stype[0] == "Neural"):
+    elif stype[0] == 'Neural':
         tt.st.savePattern(pattern,fullSentence)
 
 def checkArticle(name):
@@ -57,6 +61,11 @@ def ajaxneuralmatches():
     a = request.args.getlist('valMatchGrammar', None)
     b = request.args.getlist('valMatchLength', None)
     results = findNeuralMatchesInArticle(a,b)
+    return jsonify(result=results)
+
+@app.route('/ajaxtreematches')
+def ajaxtreematches():
+    results = findTreeMatchesInArticle()
     return jsonify(result=results)
 
 @app.route('/ajaxSavePattern')

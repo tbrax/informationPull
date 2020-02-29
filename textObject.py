@@ -135,6 +135,23 @@ class TextObject:
     def textToPOSTokens(self,text):
         return 0
 
+    def findTreeMatches(self):
+        text = self.getTextOnly(self.sentences)
+        patterns = self.st.getPatternObject()
+        print(patterns)
+        matchList = []
+        for x in text:
+            for y in patterns[4]:
+                #print(y)
+                resultDict = {
+                                "Art Sen":x,
+                                "Saved Sen":y,
+                                "Match?":self.ch.compareTree(x,y)
+                                }
+                matchList.append(resultDict)
+
+        return matchList
+
     def findNeuralMatches(self,resultType,lengthType):
         if self.textLoaded:
             if not self.Neural:

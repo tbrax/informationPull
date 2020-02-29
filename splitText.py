@@ -31,6 +31,7 @@ class SplitText:
         fullObj = []
         depObj = []
         headObj = []
+        fullSen = []
         for line in text:
             if (line.startswith('P:')):
                 reduced = line[2:].strip()
@@ -42,7 +43,6 @@ class SplitText:
                         wordArr.append(iSep)
                 if len(wordArr) > 0:
                     patternObj.append(wordArr)
-
             elif (line.startswith('S:')):
                 full = line[2:].strip()
                 fSep = full.split("|,,|")
@@ -73,7 +73,10 @@ class SplitText:
                         wordArr.append(iSep)
                 if len(wordArr) > 0:
                     headObj.append(wordArr)
-        return [patternObj,fullObj,depObj,headObj]
+            elif (line.startswith('O:')):
+                fullSen.append(line[2:].strip())
+
+        return [patternObj,fullObj,depObj,headObj,fullSen]
 
     def saveRegexPattern(self,patternList,fullSentenceList):
         pString = ""
@@ -97,21 +100,32 @@ class SplitText:
         f.write("S:{0}".format(sString))
         f.write("\n")
 
-    
+    def wordCommaSplit(self,words):
+        if words == ',,,':
+            x = [',',',']
+        else:
+            x = words.split(",")
+        return x
+
     def savePattern(self,patternList,fullSentenceList):
         pString = ""
         sString = ""
+        sen = ""
         for i in patternList:
-            x = i.split(",")
-            pString+="{1}|..|{0}|..|{2}|,,|".format(x[0],x[1],x[2])
+            x = self.wordCommaSplit(i)
+            pString+="{1}|..|{0}|,,|".format(x[0],x[1])
         for i in fullSentenceList:
-            x = i.split(",")
+            x = self.wordCommaSplit(i)
             sString+="{1}|..|{0}|,,|".format(x[0],x[1])
+            sen += "{0} ".format(x[0])
+       
 
         f = open(self.patternSaveFile2, "a",encoding="utf-8")
         f.write("P:{0}".format(pString))
         f.write("\n")
         f.write("S:{0}".format(sString))
+        f.write("\n")
+        f.write("O:{0}".format(sen))
         f.write("\n")
         return 0
 

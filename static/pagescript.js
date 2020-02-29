@@ -150,6 +150,11 @@ function showNeuralReturn(data)
     showReturnResult(data,"Neural")
 }
 
+function showTreeReturn(data)
+{
+    showReturnResult(data,"Tree")
+}
+
 function showReturnRegexResult(data,type)
 {
     var q = document.getElementById("questionResultSpan");
@@ -277,8 +282,18 @@ function checkNeuralPatterns()
                 },
                 function(data) 
                 {
-                    showNeuralReturn(data.result)
-                    
+                    showNeuralReturn(data.result)                  
+                });
+}
+
+function checkTreePatterns()
+{
+    $.getJSON($SCRIPT_ROOT + '/ajaxtreematches',
+                {
+                },
+                function(data) 
+                {
+                    showTreeReturn(data.result)                  
                 });
 }
 
@@ -537,21 +552,22 @@ function splitSentence(section,sentence,graph)
         });
 
     var btnWhole1 = document.createElement("button");
-        btnWhole1.innerHTML = "Add Neural Pattern";
+        btnWhole1.innerHTML = "Save patterns to file";
         btnWhole1.addEventListener("click", function()
         {
             saveNeuralPattern()
+            saveRegexPattern()
         });
 
     var btnWhole2 = document.createElement("button");
-    btnWhole2.innerHTML = "Add Regex Pattern";
+    btnWhole2.innerHTML = "Save Regex Pattern";
     btnWhole2.addEventListener("click", function()
     {
         saveRegexPattern()
     });
 
     var btnWhole3 = document.createElement("button");
-    btnWhole3.innerHTML = "Show Pattern";
+    btnWhole3.innerHTML = "Save Pattern";
     btnWhole3.addEventListener("click", function()
     {
         savePattern()
@@ -559,8 +575,8 @@ function splitSentence(section,sentence,graph)
 
     sen2.appendChild(btnWhole0);
     sen2.appendChild(btnWhole1);
-    sen2.appendChild(btnWhole2);
-    sen2.appendChild(btnWhole3);
+    //sen2.appendChild(btnWhole2);
+    //sen2.appendChild(btnWhole3);
 
 
     for (let i in section)
@@ -651,6 +667,18 @@ function addDocumentButtons()
             checkNeuralPatterns();
         }); 
     patternButtonNeuralSpan.appendChild(btnPattern1);
+
+    var patternTreeSpan = document.getElementById("checkTreeSpan");
+    removeChildren(patternTreeSpan);
+    var btnPattern2 = document.createElement("button");
+        btnPattern2.innerHTML = "Check Tree";
+        btnPattern2.addEventListener("click", function()
+        {
+            checkTreePatterns();
+        }); 
+        patternTreeSpan.appendChild(btnPattern2);
+
+
     ////////
     var select = document.createElement("select");
     select.id = "neuralSelect";
