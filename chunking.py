@@ -8,6 +8,11 @@ class Chunking:
         'Returns a spacy text object'
         return self.nlp(text)
 
+
+    def displacyService(self,text):
+        doc = self.nlp(text)
+        return displacy.parse_deps(doc)
+
     def treeHTML(self,text):
         'Takes a sentence. Returns a string of HTML that displays a picture of the nlp graph'
         return displacy.render(self.processText(text), style='dep')

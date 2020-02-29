@@ -6,9 +6,15 @@
     url_for('static', filename='jquery.js') }}">
 </script>
 <link rel="stylesheet" href="{{ url_for('static', filename='main.css') }}">
+
+<script type=text/javascript src="{{
+    url_for('static', filename='displacy.js') }}">
+</script>
 <script type=text/javascript src="{{
     url_for('static', filename='pagescript.js') }}">
 </script>
+
+
 
     <p>
         <input type=text size=10 name=article>
@@ -27,7 +33,16 @@
         <span id="checkPatternNeuralSpan"> </span>      
     </p>
     
-    <button type="button" onclick="resetConstruction()">Reset Sentence</button> 
+    <p>
+        <span id="graphs"> 
+            <span id="constructedGraph"> </span>   
+            <span id="selectedGraph"> </span>    
+        </span>
+    </p>
+    <p>
+        <button type="button" onclick="resetConstruction()">Reset Sentence</button> 
+    </p>
+    <button type="button" onclick="resetConstruction()">Show/Hide Graphs</button> 
     <p>
         <span id="constructedSentence"> </span>      
     </p>

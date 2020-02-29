@@ -4,9 +4,10 @@ from splitText import SplitText
 from getText import GetText
 from textObject import TextObject
 app = Flask(__name__)
-gt = GetText()
-st = SplitText()
 tt = TextObject()
+
+def getGraphHTML(sentence):
+    return tt.getGraphHTML(sentence)
 
 def findNeuralMatchesInArticle(resultType,resultLength):
     rt = resultType[0]
@@ -16,9 +17,9 @@ def findNeuralMatchesInArticle(resultType,resultLength):
 
 def savePattern(pattern,fullSentence,stype):
     if (stype[0] == "Regex"):
-        st.saveRegexPattern(pattern,fullSentence)
+        tt.st.saveRegexPattern(pattern,fullSentence)
     elif (stype[0] == "Neural"):
-        st.savePattern(pattern,fullSentence)
+        tt.st.savePattern(pattern,fullSentence)
 
 def checkArticle(name):
     return tt.getArticleSectionList(name)
@@ -40,7 +41,7 @@ def analyzeRegexList(sentenceList):
     return tt.sentenceTokenDisplayList(sentenceList)
 
 def findPatternMatchesInArticle(articleName):
-    art = gt.getArticle(articleName)
+    art = tt.gt.getArticle(articleName)
     matches = tt.findRegexMatches(art[1])
     return matches
 
@@ -90,8 +91,7 @@ def ajaxGetArticle():
 def ajaxAnalyzeRegex():
     a = request.args.get('valSentenceToAnalyze', 0)
     b = request.args.getlist('valSectionToAnalyze', None)
-    graph = "TODO"
-    return jsonify(result0=analyzeRegex(a),result1=analyzeRegexList(b),graph=graph)
+    return jsonify(result0=analyzeRegex(a),result1=analyzeRegexList(b),graph=getGraphHTML(a))
 
 @app.route("/", methods = ['GET'])
 def mainpage():
