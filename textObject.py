@@ -135,18 +135,21 @@ class TextObject:
     def textToPOSTokens(self,text):
         return 0
 
+    def constructReducedSentence(self,saveFull,savedReduced,articleSentence):
+        return self.ch.constructReducedSentence(self,saveFull,savedReduced,articleSentence)
+
     def findTreeMatches(self):
         text = self.getTextOnly(self.sentences)
         patterns = self.st.getPatternObject()
         matchList = []
         for x in text:
             for y in patterns[4]:
-                resultDict = {
-                                "Art Sen":x,
-                                "Saved Sen":y,
-                                "Match?":self.ch.compareTree(x,y)
-                                }
-                matchList.append(resultDict)
+                if self.ch.compareTree(x,y):
+                    resultDict = {
+                                    "Article Sentence":x,
+                                    "Saved Sentence":y
+                                    }
+                    matchList.append(resultDict)
 
         return matchList
 
