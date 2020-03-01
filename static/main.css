@@ -10,5 +10,9 @@
     outline: none;
     font-size: 12px;
     width: 72px;
+}
 
+.arrowgraph {
+    display:inline-block;
+    font-size: 13px;
 }

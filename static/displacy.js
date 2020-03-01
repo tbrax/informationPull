@@ -65,7 +65,7 @@ class displaCy {
 
         this.levels = [...new Set(parse.arcs.map(({ end, start }) => end - start).sort((a, b) => a - b))];
         this.highestLevel = this.levels.indexOf(this.levels.slice(-1)[0]) + 1;
-        this.offsetY = this.distance / 2 * this.highestLevel;
+        this.offsetY = this.distance / 1.5 * this.highestLevel;
 
         const width = this.offsetX + parse.words.length * this.distance;
         const height = this.offsetY + 3 * this.wordSpacing;
@@ -149,8 +149,9 @@ class displaCy {
                     this._el('path', {
                         id: 'arrow-' + rand,
                         classnames: [ 'displacy-arc' ],
+                        //[ 'd', `M${startX},${startY} C${startX},${curve} ${endpoint},${curve} ${endpoint},${startY}`],
                         attributes: [
-                            [ 'd', `M${startX},${startY} C${startX},${curve} ${endpoint},${curve} ${endpoint},${startY}`],
+                            [ 'd', `M${startX},${startY} ${startX},${curve} ${endpoint},${curve} ${endpoint},${startY}`],
                             [ 'stroke-width', this.arrowStroke + 'px' ],
                             [ 'fill', 'none' ],
                             [ 'stroke', 'currentColor' ],

@@ -136,7 +136,7 @@ class TextObject:
         return 0
 
     def constructReducedSentence(self,saveFull,savedReduced,articleSentence):
-        return self.ch.constructReducedSentence(self,saveFull,savedReduced,articleSentence)
+        return self.ch.constructReducedSentence(saveFull,savedReduced,articleSentence)
 
     def findTreeMatches(self):
         text = self.getTextOnly(self.sentences)
