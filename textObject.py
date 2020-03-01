@@ -138,11 +138,9 @@ class TextObject:
     def findTreeMatches(self):
         text = self.getTextOnly(self.sentences)
         patterns = self.st.getPatternObject()
-        print(patterns)
         matchList = []
         for x in text:
             for y in patterns[4]:
-                #print(y)
                 resultDict = {
                                 "Art Sen":x,
                                 "Saved Sen":y,
