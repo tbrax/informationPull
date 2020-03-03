@@ -15,7 +15,7 @@ class TextObject:
         self.title = ""
         self.textLoaded = False
         self.Neural = False
-        self.st = SplitText()
+        self.st = SplitText(self)
         self.gt = GetText()
         self.ch = Chunking()
         self.nameListNeural = [
@@ -43,6 +43,9 @@ class TextObject:
         self.matchesRegex = []
         self.matchesNeural = []
     #Pattern Sentence
+
+    def returnPOSList(self,sentence):
+        return self.ch.returnPOSList(sentence)
 
     def getGraph(self,sentence):
         #return self.ch.treeHTML(sentence)

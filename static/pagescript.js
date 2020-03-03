@@ -1,7 +1,8 @@
 
 class LoadedArticle {
 constructor() {
-    this.sentenceConstruction = [];
+    this.sentenceFull = [];
+    this.sentenceShort = [];
     this.name = "";
     this.sentence = "";
     this.neuralMatchType = "grammar"
@@ -9,6 +10,62 @@ constructor() {
     this.results = []
     this.displacy = null
 }
+
+addConstruction(value,where)
+{
+    if (where == 'Short')
+    {
+        this.sentenceShort.push(value)
+        this.updateConstruction(where)
+    }
+    else if (where == 'Full')
+    {
+        this.sentenceFull.push(value)
+        //this.updateConstruction(where)
+    }
+}
+
+updateConstruction(type)
+{
+    resetConstructionImage();
+    var sen0 = document.getElementById("constructedSentence");
+    var sen1 = document.getElementById("constructedGrammar");
+
+    var c = false;
+
+    if (type == 'Full')
+    {
+        c = this.sentenceFull
+    }
+
+    else if (type == 'Short')
+    {
+        c = this.sentenceShort
+    }
+    if (c)
+    {
+        for (let i in c)
+        {               
+            var btn0 = document.createElement("button");
+                btn0.innerHTML = c[i][0];
+                btn0.className = "fixedbtn";
+            var btn1 = document.createElement("button");
+                btn1.innerHTML = c[i][1];
+                btn1.className = "fixedbtn";
+            sen0.appendChild(btn0);
+            sen1.appendChild(btn1);
+        }
+    }
+}
+
+
+resetConstruction()
+{
+    sentenceConstruction = [];
+    resetConstructionImage();
+    
+}
+
 getSentenceString()
 {
     var sen ="";
@@ -48,10 +105,10 @@ loadDisplacy()
     this.displacy = new displaCy('none', {
                                             container: '#selectedGraph',
                                             distance: 60,
-                                            offsetX: 15,
-                                            arrowSpacing: 8,
-                                            arrowWidth: 5,
-                                            wordSpacing: 30,
+                                            offsetX: 16,
+                                            arrowSpacing: 9,
+                                            arrowWidth: 6,
+                                            wordSpacing: 32,
                                             compact: true,
                                         
                                         })
@@ -320,7 +377,7 @@ function getStructure(section,sentence)
                 traditional: true,
             success: function(data) 
             {
-                splitSentence(data.result1,data.result0,data.graph);
+                splitSentence(data.result1,data.result0);
             }
             });
     /*$.getJSON($SCRIPT_ROOT + '/ajaxAnalyzeRegex',
@@ -357,43 +414,23 @@ function resetConstructionImage()
     var sen1 = document.getElementById("constructedGrammar");
     removeChildren(sen1);
 }
-function resetConstruction()
-{
-    currentArt.sentenceConstruction = [];
-    resetConstructionImage();
-    
-}
 
-function updateConstruction(c)
-{
-    resetConstructionImage();
-    var sen0 = document.getElementById("constructedSentence");
-    var sen1 = document.getElementById("constructedGrammar");
-    for (let i in c)
-    {               
-        var btn0 = document.createElement("button");
-            btn0.innerHTML = c[i][0];
-            btn0.className = "fixedbtn";
-        var btn1 = document.createElement("button");
-            btn1.innerHTML = c[i][1];
-            btn1.className = "fixedbtn";
-        sen0.appendChild(btn0);
-        sen1.appendChild(btn1);
-    }
-}
+
+
 
 function addWholeConstruction(sentence)
 {
     for(let i in sentence)
     {
-        addWordToConstruction(sentence[i][0],sentence[i][1])
+        addWordToConstruction(sentence[i][0],sentence[i][1],i,'Short')
     }
 }
 
-function addWordToConstruction(word,grammar,index)
+function addWordToConstruction(word,grammar,index,type)
 {
-    currentArt.sentenceConstruction.push([word,grammar,index]);
-    updateConstruction(currentArt.sentenceConstruction);
+    //TODO
+    currentArt.addConstruction([word,grammar,index],type);
+
 }
 
 function getColumn(array,col)
@@ -416,15 +453,34 @@ function arrayToString(arr)
     return temp
 }
 
-function saveRegexPattern()
+function savePattern(type)
 {
-    var sendP = currentArt.sentenceConstruction;
-    var sendS = currentArt.sentence;
+    var sendF = currentArt.sentenceFull;
+    var sendS = currentArt.sentenceShort;
 
     $.ajax({
             url: $SCRIPT_ROOT + '/ajaxSavePattern',
-            data: { valPattern: sendP,
-                    valSentence: sendS,
+            data: { valFull: sendF,
+                    valShort: sendS,
+                    valSaveType: type
+                    },
+                traditional: true,
+            success: function(data) 
+            {
+                //showHandReturn(data.result)
+            }
+            });
+}
+/*
+function saveRegexPattern()
+{
+    var sendF = currentArt.sentenceFull;
+    var sendS = currentArt.sentenceShort;
+
+    $.ajax({
+            url: $SCRIPT_ROOT + '/ajaxSavePattern',
+            data: { valFull: sendF,
+                    valShort: sendS,
                     valSaveType: "Regex" 
                     },
                 traditional: true,
@@ -437,12 +493,13 @@ function saveRegexPattern()
 
 function saveNeuralPattern()
 {
-    var sendP = currentArt.sentenceConstruction;
-    var sendS = currentArt.sentence;
+    var senF = currentArt.sentencFull;
+    var senS = currentArt.sentenceShort;
+    //console.log(sendP)
     $.ajax({
     url: $SCRIPT_ROOT + '/ajaxSavePattern',
-    data: { valPattern: sendP,
-            valSentence: sendS,
+    data: { valFull: senF,
+            valShort: senS,
             valSaveType: "Neural" 
             },
     traditional: true,
@@ -470,7 +527,7 @@ success: function(data)
 }
 });
 }
-
+*/
 function makeGraph(graph)
 {
     currentArt.displacy.render(parse=graph)
@@ -491,8 +548,6 @@ function ajaxGetGraph(sentence)
             });
 }
 
-
-
 function hideGraph()
 {
     var g = document.getElementById("selectedGraph");
@@ -509,8 +564,20 @@ function showGraph()
 function showSentenceGraph()
 {
     showGraph();
-    console.log(currentArt.getSentenceString());
+    //console.log(currentArt.getSentenceString());
     ajaxGetGraph(currentArt.getSentenceString());
+}
+
+function showBoxSentence()
+{
+    var text = document.getElementById("addBox");
+    forceSentenceGraph(text.value)
+}
+
+function forceSentenceGraph(sentence)
+{
+    showGraph();
+    ajaxGetGraph(sentence);
 }
 
 function showConstructedGraph()
@@ -520,12 +587,8 @@ function showConstructedGraph()
     ajaxGetGraph(currentArt.getSentenceConstructionString());
 }
 
-
-
-function splitSentence(section,sentence,graph)
+function splitSentence(section,sentence)
 {
-    //parse(sentence)
-    
     currentArt.sentence = sentence
     var sen0 = document.getElementById("selectedSentence");
     removeChildren(sen0);
@@ -556,8 +619,8 @@ function splitSentence(section,sentence,graph)
         btnWhole1.innerHTML = "Save patterns to file";
         btnWhole1.addEventListener("click", function()
         {
-            saveNeuralPattern()
-            saveRegexPattern()
+            savePattern('Neural')
+            savePattern('Regex')
         });
 
     var btnWhole2 = document.createElement("button");
@@ -566,33 +629,21 @@ function splitSentence(section,sentence,graph)
     {
         saveRegexPattern()
     });
-
-    var btnWhole3 = document.createElement("button");
-    btnWhole3.innerHTML = "Save Pattern";
-    btnWhole3.addEventListener("click", function()
-    {
-        savePattern()
-    });
-
     sen2.appendChild(btnWhole0);
     sen2.appendChild(btnWhole1);
-    //sen2.appendChild(btnWhole2);
-    //sen2.appendChild(btnWhole3);
-
-
     for (let i in section)
     {
         for (let i1 in section[i])
         {
             let val0 = section[i][i1][0];
             let val1 = section[i][i1][1];
-
+            
             var btnSec0 = document.createElement("button");
             btnSec0.innerHTML = section[i][i1][0];
             btnSec0.className = "fixedbtn";   
             btnSec0.addEventListener("click", function()
             {
-                addWordToConstruction(val0,val1,i)
+                addWordToConstruction(val0,val1,i,'Short')
             }); 
             anchorSectionText.appendChild(btnSec0);
 
@@ -601,7 +652,7 @@ function splitSentence(section,sentence,graph)
             btnSec1.className = "fixedbtn";   
             btnSec1.addEventListener("click", function()
             {
-                addWordToConstruction(val0,val1,i)
+                addWordToConstruction(val0,val1,i,'Short')
             }); 
             anchorSectionGrammar.appendChild(btnSec1);
 
@@ -610,8 +661,10 @@ function splitSentence(section,sentence,graph)
 
     for (let i in sentence) 
     {
+        
         let val0 = sentence[i][0];
         let val1 = sentence[i][1];
+        currentArt.addConstruction([val0,val1,i],'Full');
         var btn = document.createElement("button");
         btn.innerHTML = val0;
         btn.className = "fixedbtn";   
@@ -622,12 +675,12 @@ function splitSentence(section,sentence,graph)
         anchor1.appendChild(btn2);
         btn.addEventListener("click", function()
         {
-            addWordToConstruction(val0,val1,i)
+            addWordToConstruction(val0,val1,i,'Short')
         }); 
 
         btn2.addEventListener("click", function()
         {
-            addWordToConstruction(val0,val1,i)
+            addWordToConstruction(val0,val1,i,'Short')
         }); 
 
     }

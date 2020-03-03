@@ -21,6 +21,13 @@ class Chunking:
     def constructReducedSentence(self,saveFull,savedReduced,articleSentence):
         return False
 
+    def returnPOSList(self,sentence):
+        ls = []
+        doc = self.nlp(sentence)
+        for x in doc:
+            ls.append([x.text,x.pos_])
+        return ls
+
     def tagsIdenticalBool(self,wordList0,wordList1):
         if len(wordList0) is not len(wordList1):
             return False
@@ -56,6 +63,31 @@ class Chunking:
                         matchTotal = False     
         return matchTotal
 
+    def compareToken(self,a,b):
+        return a.pos_ == b.pos_
+
+
+    def compareSubTree(self,depth,a,b):
+        if (depth > 5):
+            return False
+        bothLimitLeft = (a == a.left_edge and b == b.left_edge)
+        bothLimitRight = (a == a.right_edge and b == b.right_edge)
+        print(a,a.left_edge,a.right_edge,b,b.left_edge,b.right_edge)
+        if ((a is None and b is None)):
+            return True 
+        if a is not None and b is not None: 
+            dataSame = (a.pos_ == b.pos_)
+            print("Left")
+            left = self.compareSubTree(depth+1,a.left_edge,b.left_edge)
+            print("Right")
+            right = self.compareSubTree(depth+1,a.right_edge,b.right_edge)
+
+            ret = (dataSame and left and right)
+            print("Compare", ret)
+            return ret
+
+        return False
+
     def compareTreeBool(self,sen0,sen1):
         'Compares two sentences to see if they have same tree'
         doc0 = self.nlp(sen0)
@@ -63,6 +95,8 @@ class Chunking:
         root0 = [token for token in doc0 if token.head == token][0]
         root1 = [token for token in doc1 if token.head == token][0]
         result = self.compareTokenObj(root0,root1)
+        #result = self.compareSubTree(0,root0,root1)
+        #self.serve(sen0)
         return result
 
     def compareTree(self,sen0,sen1):
@@ -79,19 +113,19 @@ def main():
         #print(token)
     #    print (token.text, token.tag_, token.head.text, token.dep_) 
     #print(displacy.render(conference_doc, style='dep'))
-    sen0 = 'He is interested in learning natural language processing'
-    
-    sen1 = 'Men like cheese'
-    sen2 = 'Girls like green plants'
+    sens = [
+            'He is interested in learning natural language processing',
+            'Men like cheese',
+            'Girls like green plants',
+            "A blue lake is an area filled with water.",
+            'A desert is a area filled with course, fine sand.',
+            'A taco is a traditional Mexican food consisting of a small hand-sized tortilla.',
+            'A taco is a blue and gold traditional Mexican food',
+            'A banana is an Australian fruit consisting of a yellow, stinky peel',
+            'displaCy uses CSS and JavaScript to show you how computers understand language',
 
-    sen3 = "A blue lake is an area filled with water."
-    sen4 = 'A desert is a area filled with course, fine sand.'
-
-    sen5 = 'A taco is a traditional Mexican food consisting of a small hand-sized tortilla.'
-    sen6 = 'A taco is a traditional Mexican food'
-    sen7 = 'A banana is a Australian fruit consisting of a yellow peel'
-
-    result = ch.compareTree(sen7,sen6)
+    ]
+    result = ch.compareTree(sens[4],sens[7])
     print(result)
 
 
