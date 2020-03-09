@@ -61,7 +61,7 @@ updateConstruction(type)
 
 resetConstruction()
 {
-    sentenceConstruction = [];
+    this.sentenceConstruction = [];
     resetConstructionImage();
     
 }
@@ -124,6 +124,12 @@ window.onload = (event) =>
         currentArt.loadDisplacy()
     };
 
+
+function resetConstruction()
+{
+    currentArt.resetConstruction();
+    
+}
 
 function seperateTextBySentences(text)
 {
@@ -629,8 +635,17 @@ function splitSentence(section,sentence)
     {
         saveRegexPattern()
     });
+
+    var btnWhole3 = document.createElement("button");
+        btnWhole3.innerHTML = "Clear Sentence";
+        btnWhole3.addEventListener("click", function()
+        {
+            resetConstruction();
+        });
+
     sen2.appendChild(btnWhole0);
     sen2.appendChild(btnWhole1);
+    sen2.appendChild(btnWhole3);
     for (let i in section)
     {
         for (let i1 in section[i])

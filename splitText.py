@@ -34,7 +34,9 @@ class SplitText:
         headObj = []
         fullSen = []
         shortSen = []
+        indxSen = []
         for line in text:
+            
             if (line.startswith('P:')):
                 reduced = line[2:].strip()
                 rSep = reduced.split("|,,|")
@@ -45,42 +47,14 @@ class SplitText:
                         wordArr.append(iSep)
                 if len(wordArr) > 0:
                     patternObj.append(wordArr)
-            elif (line.startswith('S:')):
-                full = line[2:].strip()
-                fSep = full.split("|,,|")
-                wordArr = []
-                for item in fSep:
-                    if item is not "":
-                        iSep = item.split("|..|")
-                        wordArr.append(iSep)
-                if len(wordArr) > 0:
-                    fullObj.append(wordArr)
-            elif (line.startswith('D:')):
-                full = line[2:].strip()
-                fSep = full.split("|,,|")
-                wordArr = []
-                for item in fSep:
-                    if item is not "":
-                        iSep = item.split("|..|")
-                        wordArr.append(iSep)
-                if len(wordArr) > 0:
-                    depObj.append(wordArr)
-            elif (line.startswith('H:')):
-                full = line[2:].strip()
-                fSep = full.split("|,,|")
-                wordArr = []
-                for item in fSep:
-                    if item is not "":
-                        iSep = item.split("|..|")
-                        wordArr.append(iSep)
-                if len(wordArr) > 0:
-                    headObj.append(wordArr)
-            elif (line.startswith('O:')):
+            elif (line.startswith('F:')):
                 fullSen.append(line[2:].strip())
-            elif (line.startswith('H:')):
+            elif (line.startswith('S:')):
                 shortSen.append(line[2:].strip())
+            elif (line.startswith('I:')):
+                indxSen.append(line[2:].strip())
 
-        return [patternObj,fullObj,depObj,headObj,fullSen,shortSen]
+        return [patternObj,fullObj,depObj,headObj,fullSen,shortSen,indxSen]
 
     def patternToSentence(self,pattern):
         words = []
@@ -121,17 +95,18 @@ class SplitText:
         return x
 
     def savePattern(self,fullList,shortList):
-        pString = ""
+        indxString = ""
         sString = ""
         sen = ""
         senShort = ""
         for i in shortList:
             x = self.wordCommaSplit(i)
-            pString+="{1}|..|{0}|,,|".format(x[0],x[1])
+            #pString+="{1}|..|{0}|,,|".format(x[0],x[1])
+            indxString += "{0} ".format(x[2])
             senShort += "{0} ".format(x[0])
         for i in fullList:
             x = self.wordCommaSplit(i)
-            sString+="{1}|..|{0}|,,|".format(x[0],x[1])
+            #sString+="{1}|..|{0}|,,|".format(x[0],x[1])
             sen += "{0} ".format(x[0])
     
         f = open(self.patternSaveFile2, "a",encoding="utf-8")
@@ -139,9 +114,12 @@ class SplitText:
         #f.write("\n")
         #f.write("S:{0}".format(sString))
         #f.write("\n")
+
         f.write("F:{0}".format(sen))
         f.write("\n")
         f.write("S:{0}".format(senShort))
+        f.write("\n")
+        f.write("I:{0}".format(indxString))
         f.write("\n")
         return 0
 

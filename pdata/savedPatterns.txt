@@ -1,2 +1,6 @@
 F:A lake is an area filled with water  localized in a basin  surrounded by land  apart from any river or other outlet that serves to feed or drain the lake . 
-S:A lake is an area 
+S:A lake is an area filled with water 
+I:0 1 2 3 4 5 6 7 
+F:The cat ( Felis catus ) is a small carnivorous mammal . 
+S:The cat is a mammal 
+I:0 1 6 7 10 
