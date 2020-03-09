@@ -119,7 +119,7 @@ class TextObject:
 
     def findRegexMatches(self,inputText):
         rt = self.st.findRegexMatches(inputText)
-        #print(rt[0])
+
         return self.removeTroublesomeSentencesRegex(rt,self.st.nameListRegex[3])
 
 
@@ -137,20 +137,28 @@ class TextObject:
 
     def textToPOSTokens(self,text):
         return 0
+    def constructReducedSentence(self,index,articleSentence,fullSentence,shortSentence):
+        indexList = index.split(" ")
+        indexs = []
+        for x in indexList:
+            indexs.append(int(x))
+        return self.ch.constructReducedSentence(indexs,articleSentence,fullSentence,shortSentence)
 
-    def constructReducedSentence(self,saveFull,savedReduced,articleSentence):
-        return self.ch.constructReducedSentence(saveFull,savedReduced,articleSentence)
 
     def findTreeMatches(self):
         text = self.getTextOnly(self.sentences)
         patterns = self.st.getPatternObject()
         matchList = []
         for x in text:
-            for y in patterns[4]:
+            for idy,y in enumerate(patterns[4]):
                 if self.ch.compareTree(x,y):
+
+                    reducedSen = self.constructReducedSentence(patterns[6][idy],x,y,patterns[5][idy])
+
                     resultDict = {
-                                    "Article Sentence":x,
-                                    "Saved Sentence":y
+                                    'Article Sentence':x,
+                                    'Full Sentence':y,
+                                    'Reduced Article':reducedSen
                                     }
                     matchList.append(resultDict)
 
@@ -235,7 +243,7 @@ class TextObject:
                   # matchList.append([ y,grammarPattern[idy],sentencesFull[idy],grammarText[idx],text[idx]])
                     matchList.append(resultDict)
             rt = self.convertListString(self.viewMatches(matchList))
-            #print(rt[0])
+
             return self.removeTroublesomeSentencesNeural(rt,self.nameListNeural[4])
 
     def convertListString(self,data):

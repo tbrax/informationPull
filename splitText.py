@@ -35,8 +35,7 @@ class SplitText:
         fullSen = []
         shortSen = []
         indxSen = []
-        for line in text:
-            
+        for line in text:           
             if (line.startswith('P:')):
                 reduced = line[2:].strip()
                 rSep = reduced.split("|,,|")
@@ -70,13 +69,11 @@ class SplitText:
         sString = ""
         for idx,value in enumerate(shortList):
             x = value.split(",")
-            #pString += ".*"
             pString += ".*?({0})".format(x[1])
             if (idx == len(shortList)-1):
                 pString += ".*?"
         for idx,value in enumerate(fullList):
             x = value.split(",")
-            #sString += " "
             sString += ".*?({0})".format(x[1])
             if (idx == len(fullList)-1):
                 sString += ".*?"
@@ -110,11 +107,6 @@ class SplitText:
             sen += "{0} ".format(x[0])
     
         f = open(self.patternSaveFile2, "a",encoding="utf-8")
-        #f.write("P:{0}".format(pString))
-        #f.write("\n")
-        #f.write("S:{0}".format(sString))
-        #f.write("\n")
-
         f.write("F:{0}".format(sen))
         f.write("\n")
         f.write("S:{0}".format(senShort))
@@ -137,9 +129,8 @@ class SplitText:
     def getRegexPatterns(self):
         return self.loadRegexPatterns()
 
-    #Turn word list to POS tokens
-
     def wordToToken(self,wordList):
+        'Turn word list to POS tokens'
         return nltk.pos_tag(wordList)
 
     def listToToken(self, sentenceList):
@@ -153,11 +144,9 @@ class SplitText:
         #Seperates sentence into list of words
         text = word_tokenize(sentence)
         return self.wordToToken(text)
-        #return nltk.pos_tag(sentence)
  
     def sentenceTokenDisplay(self,sentence):
         'Turns a sentence to tokens, and returns list'
-        #tokenList = self.sentenceToToken(sentence)
         tokenList = self.tt.returnPOSList(sentence)
         #result = [i[1] for i in tokenList]
         return tokenList
@@ -169,8 +158,6 @@ class SplitText:
     def checkSentenceRegex(self,sentence):
         result = self.checkListofWordsRegex(self.sentenceToToken(sentence),sentence)
         return result
-        #text = word_tokenize(sentence)
-        #self.checkWord(nltk.pos_tag(text))
 
     def findInList(self,givenList, item):
         try:
@@ -178,8 +165,8 @@ class SplitText:
         except ValueError:
             return -1
 
-    #Compare sentence against all patterns and pront if match
     def checkAllPatterns(self,nltkTag, newSentence, sentenceLocationList,originalSentence):
+        'Compare sentence against all patterns and pront if match'
         listOfMatches = []
         for pattern in self.getRegexPatterns():
             result = self.checkPattern(pattern, nltkTag,newSentence, sentenceLocationList,originalSentence)

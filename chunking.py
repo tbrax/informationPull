@@ -3,7 +3,7 @@ from spacy import displacy
 class Chunking:
     def __init__(self):
         self.nlp = spacy.load('en_core_web_sm')
-        self.debug = True
+        self.debug = False
 
     def processText(self,text):
         'Returns a spacy text object'
@@ -18,8 +18,49 @@ class Chunking:
         'Takes a sentence. Returns a string of HTML that displays a picture of the nlp graph'
         return displacy.render(self.processText(text), style='dep')
 
-    def constructReducedSentence(self,saveFull,savedReduced,articleSentence):
+    def findTokenObj(self,find,tok0,tok1):
+        if find == tok0:
+            return tok1
+
+        for idx0,x0 in enumerate(tok0.lefts):
+            for idx1,x1 in enumerate(tok1.lefts):
+                if idx0 == idx1:
+                    left = self.findTokenObj(find,x0,x1)
+                    if left is not False:
+                        return left
+        for idx0,x0 in enumerate(tok0.rights):
+            for idx1,x1 in enumerate(tok1.rights):
+                if idx0 == idx1:
+                    right = self.findTokenObj(find,x0,x1)
+                    if right is not False:
+                        return right
         return False
+
+
+    def constructReducedSentence(self,indexList,articleSentence,fullSentence,shortSentence):
+        'Takes a full sentence and turns it into a reduced one'
+        docArticle = self.nlp(articleSentence)
+        docShort = self.nlp(shortSentence)
+        docFull = self.nlp(fullSentence)
+
+        rootArticle = [token for token in docArticle if token.head == token][0]
+        rootShort = [token for token in docShort if token.head == token][0]
+        rootFull = [token for token in docFull if token.head == token][0]
+
+        tokensInFull = []
+        tokensInArticle = []
+        returnSentence = ''
+        for x in indexList:
+            tokensInFull.append(docFull[x])
+        for x in tokensInFull:
+            find = self.findTokenObj(x,rootFull,rootArticle)
+            tokensInArticle.append(find)
+        print(list(tokensInArticle))
+        
+        for x in tokensInArticle:
+            if x:
+                returnSentence += (x.text+' ')
+        return returnSentence
 
     def returnPOSList(self,sentence):
         ls = []
@@ -72,14 +113,14 @@ class Chunking:
             return False
         bothLimitLeft = (a == a.left_edge and b == b.left_edge)
         bothLimitRight = (a == a.right_edge and b == b.right_edge)
-        print(a,a.left_edge,a.right_edge,b,b.left_edge,b.right_edge)
+        #print(a,a.left_edge,a.right_edge,b,b.left_edge,b.right_edge)
         if ((a is None and b is None)):
             return True 
         if a is not None and b is not None: 
             dataSame = (a.pos_ == b.pos_)
-            print("Left")
+            #print("Left")
             left = self.compareSubTree(depth+1,a.left_edge,b.left_edge)
-            print("Right")
+            #print("Right")
             right = self.compareSubTree(depth+1,a.right_edge,b.right_edge)
 
             ret = (dataSame and left and right)
@@ -117,16 +158,20 @@ def main():
             'He is interested in learning natural language processing',
             'Men like cheese',
             'Girls like green plants',
+            'A lake is an area',
             "A blue lake is an area filled with water.",
-            'A desert is a area filled with course, fine sand.',
+            'A desert is a place filled with course, fine sand.',
             'A taco is a traditional Mexican food consisting of a small hand-sized tortilla.',
             'A taco is a blue and gold traditional Mexican food',
             'A banana is an Australian fruit consisting of a yellow, stinky peel',
             'displaCy uses CSS and JavaScript to show you how computers understand language',
 
     ]
-    result = ch.compareTree(sens[4],sens[7])
-    print(result)
+    #result = ch.compareTree(sens[4],sens[7])
+    #print(result)
+
+    index = [0,2,3,4,5]
+    print(ch.constructReducedSentence(index,sens[5],sens[4],sens[3]))
 
 
 if __name__== "__main__":
