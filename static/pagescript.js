@@ -58,10 +58,14 @@ updateConstruction(type)
     }
 }
 
+resetSentence()
+{
+    this.sentenceFull = []
+}
 
 resetConstruction()
 {
-    this.sentenceConstruction = [];
+    this.sentenceShort = [];
     resetConstructionImage();
     
 }
@@ -595,7 +599,8 @@ function showConstructedGraph()
 
 function splitSentence(section,sentence)
 {
-    currentArt.sentence = sentence
+    currentArt.sentence = sentence;
+    currentArt.resetSentence();
     var sen0 = document.getElementById("selectedSentence");
     removeChildren(sen0);
     var sen1 = document.getElementById("selectedGrammar");

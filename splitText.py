@@ -35,6 +35,9 @@ class SplitText:
         fullSen = []
         shortSen = []
         indxSen = []
+
+        currDict = {}
+        dictList = []
         for line in text:           
             if (line.startswith('P:')):
                 reduced = line[2:].strip()
@@ -46,14 +49,24 @@ class SplitText:
                         wordArr.append(iSep)
                 if len(wordArr) > 0:
                     patternObj.append(wordArr)
-            elif (line.startswith('F:')):
-                fullSen.append(line[2:].strip())
-            elif (line.startswith('S:')):
-                shortSen.append(line[2:].strip())
-            elif (line.startswith('I:')):
-                indxSen.append(line[2:].strip())
-
-        return [patternObj,fullObj,depObj,headObj,fullSen,shortSen,indxSen]
+            elif (line.startswith('FS:')):
+                currDict['FullSentence'] = line[3:].strip()
+                #fullSen.append(line[2:].strip())
+            elif (line.startswith('SS:')):
+                currDict['ShortSentence'] = line[3:].strip()
+            elif (line.startswith('FP:')):
+                currDict['FullPOS'] = line[3:].strip()
+            elif (line.startswith('SP:')):
+                currDict['ShortPOS'] = line[3:].strip()
+                #shortSen.append(line[2:].strip())
+            elif (line.startswith('SI:')):
+                currDict['ShortIndex'] = line[3:].strip()
+                #indxSen.append(line[2:].strip())
+            elif (line.startswith('END:')):
+                dictList.append(currDict)
+                currDict = {}
+        return dictList
+        #return [patternObj,fullObj,depObj,headObj,fullSen,shortSen,indxSen]
 
     def patternToSentence(self,pattern):
         words = []
@@ -83,6 +96,7 @@ class SplitText:
         f.write("\n")
         f.write("F:{0}".format(sString))
         f.write("\n")
+        f.write("END:")
 
     def wordCommaSplit(self,words):
         if words == ',,,':
@@ -96,22 +110,32 @@ class SplitText:
         sString = ""
         sen = ""
         senShort = ""
+        shortPOSString = ""
+        fullPOSString = ""
         for i in shortList:
             x = self.wordCommaSplit(i)
             #pString+="{1}|..|{0}|,,|".format(x[0],x[1])
+            shortPOSString += "{0} ".format(x[1])
             indxString += "{0} ".format(x[2])
             senShort += "{0} ".format(x[0])
         for i in fullList:
             x = self.wordCommaSplit(i)
             #sString+="{1}|..|{0}|,,|".format(x[0],x[1])
+            fullPOSString += "{0} ".format(x[1])
             sen += "{0} ".format(x[0])
     
         f = open(self.patternSaveFile2, "a",encoding="utf-8")
-        f.write("F:{0}".format(sen))
+        f.write("FS:{0}".format(sen))
         f.write("\n")
-        f.write("S:{0}".format(senShort))
+        f.write("FP:{0}".format(fullPOSString))
         f.write("\n")
-        f.write("I:{0}".format(indxString))
+        f.write("SS:{0}".format(senShort))
+        f.write("\n")
+        f.write("SP:{0}".format(shortPOSString))
+        f.write("\n")   
+        f.write("SI:{0}".format(indxString))
+        f.write("\n")
+        f.write("END:")
         f.write("\n")
         return 0
 

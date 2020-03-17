@@ -18,20 +18,20 @@ class Chunking:
         'Takes a sentence. Returns a string of HTML that displays a picture of the nlp graph'
         return displacy.render(self.processText(text), style='dep')
 
-    def findTokenObj(self,find,tok0,tok1):
+    def findTokenObj(self,find,tok0,tok1,parent):
         if find == tok0:
             return tok1
 
         for idx0,x0 in enumerate(tok0.lefts):
             for idx1,x1 in enumerate(tok1.lefts):
                 if idx0 == idx1:
-                    left = self.findTokenObj(find,x0,x1)
+                    left = self.findTokenObj(find,x0,x1,tok0)
                     if left is not False:
                         return left
         for idx0,x0 in enumerate(tok0.rights):
             for idx1,x1 in enumerate(tok1.rights):
                 if idx0 == idx1:
-                    right = self.findTokenObj(find,x0,x1)
+                    right = self.findTokenObj(find,x0,x1,tok0)
                     if right is not False:
                         return right
         return False
@@ -53,7 +53,7 @@ class Chunking:
         for x in indexList:
             tokensInFull.append(docFull[x])
         for x in tokensInFull:
-            find = self.findTokenObj(x,rootFull,rootArticle)
+            find = self.findTokenObj(x,rootFull,rootArticle,rootArticle)
             tokensInArticle.append(find)
         print(list(tokensInArticle))
         

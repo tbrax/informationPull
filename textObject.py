@@ -150,14 +150,14 @@ class TextObject:
         patterns = self.st.getPatternObject()
         matchList = []
         for x in text:
-            for idy,y in enumerate(patterns[4]):
-                if self.ch.compareTree(x,y):
+            for idy,y in enumerate(patterns):
+                if self.ch.compareTree(x,y['FullSentence']):
 
-                    reducedSen = self.constructReducedSentence(patterns[6][idy],x,y,patterns[5][idy])
+                    reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
 
                     resultDict = {
                                     'Article Sentence':x,
-                                    'Full Sentence':y,
+                                    'Full Sentence':y['FullSentence'],
                                     'Reduced Article':reducedSen
                                     }
                     matchList.append(resultDict)
@@ -176,7 +176,6 @@ class TextObject:
             grammarTextList = self.st.listToToken(text)           
             grammarText = []
 
-
             #Turns [('word0','POS0'),('word1','POS1')] to 'POS0 POS1'
             for senList in grammarTextList:
                 sentence = ""
@@ -191,22 +190,22 @@ class TextObject:
             #[2] Dependency
             #[3] Head
             patterns = self.st.getPatternObject()
+            fullSentence = []
+            fullPOS = []
+            shortSentence = []
+            shortPOS = []
 
-            sentencesFull = []
-            grammarPattern = []
+            for x in patterns:
+                fullSentence.append(x['FullSentence'])
+                fullPOS.append(x['FullPOS'])
+                shortSentence.append(x['ShortSentence'])
+                shortPOS.append(x['ShortPOS'])
 
-            matchList = patterns[1]
+            matchSentence = fullSentence
+            matchPOS = fullPOS
             if (lengthType == "short"):
-                matchList = patterns[0]
-
-            for senList in matchList:
-                sentenceP = ""
-                sentenceS = ""
-                for word in senList:
-                    sentenceP +=  word[0]+" " #POS
-                    sentenceS +=  word[1]+" " # Actual word
-                grammarPattern.append(sentenceP)
-                sentencesFull.append(sentenceS)
+                matchSentence = shortSentence
+                matchPOS = shortPOS
  
             getNeuText = True
             getNeuPOS = True
@@ -218,13 +217,13 @@ class TextObject:
                         "Head":"F"
                         }
             if (getNeuText):
-                results["Text"] = self.Neural.runAndPlotPatterns(sentencesFull,text)
+                results["Text"] = self.Neural.runAndPlotPatterns(matchSentence,text)
             if (getNeuPOS):
-                results["POS"] = self.Neural.runAndPlotPatterns(grammarPattern,grammarText)
+                results["POS"] = self.Neural.runAndPlotPatterns(matchPOS,grammarText)
             if (getNeuDep):
-                results["Dep"] = self.Neural.runAndPlotPatterns(grammarPattern,grammarText)
+                results["Dep"] = self.Neural.runAndPlotPatterns(matchPOS,grammarText)
             if (getNeuHead):
-                results["Head"] = self.Neural.runAndPlotPatterns(grammarPattern,grammarText)
+                results["Head"] = self.Neural.runAndPlotPatterns(matchPOS,grammarText)
 
             matchList = []
             for idx, x in enumerate(results["Text"]):
@@ -233,8 +232,8 @@ class TextObject:
                     ps = results["POS"][idx][idy]
                     resultDict = {
                                     self.nameListNeural[0]:y,
-                                    self.nameListNeural[1]:grammarPattern[idy],
-                                    self.nameListNeural[2]:sentencesFull[idy],
+                                    self.nameListNeural[1]:matchPOS[idy],
+                                    self.nameListNeural[2]:matchSentence[idy],
                                     self.nameListNeural[3]:grammarText[idx],
                                     self.nameListNeural[4]:text[idx],
                                     self.nameListNeural[5]:resultType,
