@@ -74,26 +74,6 @@ class SplitText:
         return [words,pos]
 
 
-    def saveRegexPattern(self,fullList,shortList):
-        pString = ""
-        sString = ""
-        for idx,value in enumerate(shortList):
-            x = value.split(",")
-            pString += ".*?({0})".format(x[1])
-            if (idx == len(shortList)-1):
-                pString += ".*?"
-        for idx,value in enumerate(fullList):
-            x = value.split(",")
-            sString += ".*?({0})".format(x[1])
-            if (idx == len(fullList)-1):
-                sString += ".*?"
-
-        f = open(self.patternSaveFile, "a",encoding="utf-8")
-        f.write("SR:{0}".format(pString))
-        f.write("\n")
-        f.write("FR:{0}".format(sString))
-        f.write("\n")
-        f.write("END:")
 
     def wordCommaSplit(self,words):
         if words == ',,,':
@@ -107,7 +87,11 @@ class SplitText:
             x = words.split(',')
         return x
 
-    def savePattern(self,fullList,shortList):
+    def namedFile(self,folder,articleName):
+        f = open(folder+'\\'+articleName[0]+'.txt', "a",encoding="utf-8")
+        return f
+
+    def savePattern(self,fullList,shortList,articleName):
         indxString = ""
         sString = ""
         sen = ""
@@ -126,7 +110,7 @@ class SplitText:
             fullPOSString += "{0} ".format(x[1])
             sen += "{0} ".format(x[0])
     
-        f = open(self.patternSaveFile2, "a",encoding="utf-8")
+        f = self.namedFile(self.patternFolderNeural,articleName)
         f.write("FS:{0}".format(sen))
         f.write("\n")
         f.write("FP:{0}".format(fullPOSString))
@@ -140,9 +124,29 @@ class SplitText:
         f.write("END:")
         f.write("\n")
         return 0
+  
+    def saveRegexPattern(self,fullList,shortList,articleName):
+        pString = ""
+        sString = ""
+        for idx,value in enumerate(shortList):
+            x = value.split(",")
+            pString += ".*?({0})".format(x[1])
+            if (idx == len(shortList)-1):
+                pString += ".*?"
+        for idx,value in enumerate(fullList):
+            x = value.split(",")
+            sString += ".*?({0})".format(x[1])
+            if (idx == len(fullList)-1):
+                sString += ".*?"
+
+        f = self.namedFile(self.patternFolderRegex,articleName)
+        f.write("SR:{0}".format(pString))
+        f.write("\n")
+        f.write("FR:{0}".format(sString))
+        f.write("\n")
+        f.write("END:")
 
 
-    
     def loadRegexPatterns(self):
         'Load Regex Patterns from file'
         ps = []

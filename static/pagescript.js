@@ -467,12 +467,14 @@ function savePattern(type)
 {
     var sendF = currentArt.sentenceFull;
     var sendS = currentArt.sentenceShort;
+    var sendN = currentArt.name
 
     $.ajax({
             url: $SCRIPT_ROOT + '/ajaxSavePattern',
             data: { valFull: sendF,
                     valShort: sendS,
-                    valSaveType: type
+                    valSaveType: type,
+                    valArticleName: sendN
                     },
                 traditional: true,
             success: function(data) 

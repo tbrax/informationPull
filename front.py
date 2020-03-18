@@ -19,11 +19,15 @@ def findTreeMatchesInArticle():
     results = tt.findTreeMatches()
     return results
 
-def savePattern(full,short,stype):
+def savePattern(full,short,stype,articleName):
     if stype[0] == 'Regex':
-        tt.st.saveRegexPattern(full,short)
+        if len(short) > 0:
+            tt.st.saveRegexPattern(full,short,articleName)
+        tt.st.saveRegexPattern(full,full,articleName)
     elif stype[0] == 'Neural':
-        tt.st.savePattern(full,short)
+        if len(short) > 0:
+            tt.st.savePattern(full,short,articleName)
+        tt.st.savePattern(full,full,articleName)
 
 def checkArticle(name):
     return tt.getArticleSectionList(name)
@@ -73,12 +77,13 @@ def ajaxSavePattern():
     a = request.args.getlist('valFull', None)
     b = request.args.getlist('valShort', None)
     c = request.args.getlist('valSaveType', None)
+    d = request.args.getlist('valArticleName', None)
     #a = request.args.getlist('valFullSentence', None)
     #b = request.args.getlist('valFullPOS', None)
     #c = request.args.getlist('valShortSentence', None)
     #d = request.args.getlist('valShortPOS', None)
     #c = 0
-    savePattern(a,b,c)
+    savePattern(a,b,c,d)
     return jsonify(result=a)
 
 
