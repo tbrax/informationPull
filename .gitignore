@@ -4,5 +4,6 @@
 saved_model.pb
 /use
 neural.py
-pdata/wod.txt
-pdata/savedPatterns.txt
+/pdata/wod.txt
+/pdata/savedPatterns.txt
+savedPatterns.txt

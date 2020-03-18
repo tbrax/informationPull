@@ -207,7 +207,7 @@ class TextObject:
                 matchSentence = shortSentence
                 matchPOS = shortPOS
  
-            getNeuText = True
+            getNeuText = False
             getNeuPOS = True
             getNeuDep = False
             getNeuHead = False
@@ -226,7 +226,7 @@ class TextObject:
                 results["Head"] = self.Neural.runAndPlotPatterns(matchPOS,grammarText)
 
             matchList = []
-            for idx, x in enumerate(results["Text"]):
+            for idx, x in enumerate(results["POS"]):
                 for idy, y in enumerate(x):
                     #Text = results[]
                     ps = results["POS"][idx][idy]

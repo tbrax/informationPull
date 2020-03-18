@@ -101,8 +101,13 @@ class SplitText:
     def wordCommaSplit(self,words):
         if words == ',,,':
             x = [',',',']
+        elif ',,' in words:
+            x = [',']
+            y = words[2:]
+            for z in y.split(','):
+                x.append(z)
         else:
-            x = words.split(",")
+            x = words.split(',')
         return x
 
     def savePattern(self,fullList,shortList):

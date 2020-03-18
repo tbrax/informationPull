@@ -116,7 +116,6 @@ loadDisplacy()
                                             compact: true,
                                         
                                         })
-    //console.log(this.displacy.container)
 }
 
 }
@@ -438,6 +437,7 @@ function addWholeConstruction(sentence)
 
 function addWordToConstruction(word,grammar,index,type)
 {
+    
     //TODO
     currentArt.addConstruction([word,grammar,index],type);
 
@@ -649,8 +649,8 @@ function splitSentence(section,sentence)
         });
 
     sen2.appendChild(btnWhole0);
-    sen2.appendChild(btnWhole1);
     sen2.appendChild(btnWhole3);
+    sen2.appendChild(btnWhole1);
     for (let i in section)
     {
         for (let i1 in section[i])
@@ -808,6 +808,9 @@ function addDocumentButtons()
 
 function displayDocument(result)
 {
+    var q = document.getElementById("questionResultSpan");
+    removeChildren(q)
+
     currentArt.name = result[0]
     strs = result[1]
 
@@ -818,7 +821,6 @@ function displayDocument(result)
     
     var list = document.createElement("ol");
     listHold.appendChild(list);
-    //console.log(strs);
     for (let i in strs) 
     {
         for (let j in strs[i].Text)

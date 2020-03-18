@@ -77,8 +77,6 @@ def ajaxSavePattern():
     #b = request.args.getlist('valFullPOS', None)
     #c = request.args.getlist('valShortSentence', None)
     #d = request.args.getlist('valShortPOS', None)
-    print(a)
-    print(b)
     #c = 0
     savePattern(a,b,c)
     return jsonify(result=a)
