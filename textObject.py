@@ -28,7 +28,12 @@ class TextObject:
                             ]
         self.notFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\notlist.txt"
         self.notList = []
+        self.patterns = False
         self.load()
+        
+
+    def loadPatterns(self):
+        self.patterns = self.st.getPatternObject()
 
     def load(self):
         'Load troublesome word file. "not" etc.'
@@ -36,6 +41,8 @@ class TextObject:
         ns = f.readlines()
         for x in ns:
             self.notList.append(x.strip())
+        self.loadPatterns()
+        
 
     def reset(self):
         self.sentences = []
@@ -144,24 +151,53 @@ class TextObject:
             indexs.append(int(x))
         return self.ch.constructReducedSentence(indexs,articleSentence,fullSentence,shortSentence)
 
+    def getColumn(self,lst,col):
+        return [val[col] for val in lst]
+    def getPatterns(self):
+        return self.patterns
+
+    def findExactStructureMatches(self):
+        text = self.getTextOnly(self.sentences)
+        tks = self.sentenceTokenDisplayList(text)
+        patterns = self.getPatterns()
+        POSList = []
+        matchList = []
+        if not patterns:
+            print('Patterns not loaded')
+            return False
+        for x in patterns:
+            POSList.append([x['ShortPOS'],x['ShortSentence']])
+        for x in tks:
+            xList = self.getColumn(x,1)
+            for y in POSList:
+                yList = y[0].split(' ')
+                if (xList==yList):
+                    textSen = ' '.join(self.getColumn(x,0))
+                    savedSen = y[1]
+                    resultDict = {
+                                    'Article Sentence':textSen,
+                                    'Pattern':savedSen,
+                                    }
+                    matchList.append(resultDict)
+        return matchList
+         
+        
 
     def findTreeMatches(self):
+        return self.findExactStructureMatches()
         text = self.getTextOnly(self.sentences)
-        patterns = self.st.getPatternObject()
+        patterns = self.getPatterns()
         matchList = []
         for x in text:
             for idy,y in enumerate(patterns):
                 if self.ch.compareTree(x,y['FullSentence']):
-
                     reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
-
                     resultDict = {
                                     'Article Sentence':x,
                                     'Full Sentence':y['FullSentence'],
                                     'Reduced Article':reducedSen
                                     }
                     matchList.append(resultDict)
-
         return matchList
 
     def findNeuralMatches(self,resultType,lengthType):
@@ -189,7 +225,7 @@ class TextObject:
             #[1] Full
             #[2] Dependency
             #[3] Head
-            patterns = self.st.getPatternObject()
+            patterns = self.getPatterns()
             fullSentence = []
             fullPOS = []
             shortSentence = []
@@ -251,6 +287,8 @@ class TextObject:
                 x[key]=str(value)
             #x[self.nameListNeural[0]] = str(x[self.nameListNeural[0]])
         return data
+
+
 
     def viewMatches(self,neuralMatchList):
         'Sorts so higher values are first'

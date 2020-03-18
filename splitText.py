@@ -10,6 +10,8 @@ class SplitText:
         self.patternFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\patterns.txt"
         self.patternSaveFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\patterns.txt"
         self.patternSaveFile2 = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\savedPatterns.txt"
+        self.patternFolderNeural = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\patternNeural"
+        self.patternFolderRegex = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\patternRegex"
         self.patterns = []
         self.nameListRegex = [
                                 "Matching Text",
@@ -17,6 +19,8 @@ class SplitText:
                                 "Article Tokens",
                                 "Article Sentence"
                             ]
+
+
         self.tt = tt
 
     def getNeuralPatterns(self):
@@ -27,46 +31,39 @@ class SplitText:
         return f.readlines()
 
     def getPatternObject(self):
-        text = self.readFileLines(self.patternSaveFile2)
         patternObj = []
-        fullObj = []
-        depObj = []
-        headObj = []
-        fullSen = []
-        shortSen = []
-        indxSen = []
-
         currDict = {}
         dictList = []
-        for line in text:           
-            if (line.startswith('P:')):
-                reduced = line[2:].strip()
-                rSep = reduced.split("|,,|")
-                wordArr = []
-                for item in rSep:
-                    if item is not "":
-                        iSep = item.split("|..|")
-                        wordArr.append(iSep)
-                if len(wordArr) > 0:
-                    patternObj.append(wordArr)
-            elif (line.startswith('FS:')):
-                currDict['FullSentence'] = line[3:].strip()
-                #fullSen.append(line[2:].strip())
-            elif (line.startswith('SS:')):
-                currDict['ShortSentence'] = line[3:].strip()
-            elif (line.startswith('FP:')):
-                currDict['FullPOS'] = line[3:].strip()
-            elif (line.startswith('SP:')):
-                currDict['ShortPOS'] = line[3:].strip()
-                #shortSen.append(line[2:].strip())
-            elif (line.startswith('SI:')):
-                currDict['ShortIndex'] = line[3:].strip()
-                #indxSen.append(line[2:].strip())
-            elif (line.startswith('END:')):
-                dictList.append(currDict)
-                currDict = {}
+        for filename in os.listdir(self.patternFolderNeural):
+            text = self.readFileLines(self.patternFolderNeural+'\\'+filename)
+            for line in text:           
+                if (line.startswith('P:')):
+                    reduced = line[2:].strip()
+                    rSep = reduced.split("|,,|")
+                    wordArr = []
+                    for item in rSep:
+                        if item is not "":
+                            iSep = item.split("|..|")
+                            wordArr.append(iSep)
+                    if len(wordArr) > 0:
+                        patternObj.append(wordArr)
+                elif (line.startswith('FS:')):
+                    currDict['FullSentence'] = line[3:].strip()
+                    #fullSen.append(line[2:].strip())
+                elif (line.startswith('SS:')):
+                    currDict['ShortSentence'] = line[3:].strip()
+                elif (line.startswith('FP:')):
+                    currDict['FullPOS'] = line[3:].strip()
+                elif (line.startswith('SP:')):
+                    currDict['ShortPOS'] = line[3:].strip()
+                    #shortSen.append(line[2:].strip())
+                elif (line.startswith('SI:')):
+                    currDict['ShortIndex'] = line[3:].strip()
+                    #indxSen.append(line[2:].strip())
+                elif (line.startswith('END:')):
+                    dictList.append(currDict)
+                    currDict = {}
         return dictList
-        #return [patternObj,fullObj,depObj,headObj,fullSen,shortSen,indxSen]
 
     def patternToSentence(self,pattern):
         words = []
@@ -92,9 +89,9 @@ class SplitText:
                 sString += ".*?"
 
         f = open(self.patternSaveFile, "a",encoding="utf-8")
-        f.write("P:{0}".format(pString))
+        f.write("SR:{0}".format(pString))
         f.write("\n")
-        f.write("F:{0}".format(sString))
+        f.write("FR:{0}".format(sString))
         f.write("\n")
         f.write("END:")
 
@@ -149,10 +146,11 @@ class SplitText:
     def loadRegexPatterns(self):
         'Load Regex Patterns from file'
         ps = []
-        with open(self.patternFile, "r", encoding="utf-8") as f:
-            for line in f:
-                if (line.startswith('P:')):
-                    ps.append(line[2:].strip())
+        for filename in os.listdir(self.patternFolderRegex):
+            with open(self.patternFolderRegex+'\\'+filename, "r", encoding="utf-8") as f:
+                for line in f:
+                    if (line.startswith('SR:')):
+                        ps.append(line[2:].strip())
         return ps
   
     def getRegexPatterns(self):
@@ -170,14 +168,12 @@ class SplitText:
 
     def sentenceToToken(self,sentence):
         'Turn sentence to list of POS tokens"The great big dog" becomes "(The,DT),(great,JJ),(Big,NNP),"(dog,NN)'
-        #Seperates sentence into list of words
         text = word_tokenize(sentence)
         return self.wordToToken(text)
  
     def sentenceTokenDisplay(self,sentence):
         'Turns a sentence to tokens, and returns list'
         tokenList = self.tt.returnPOSList(sentence)
-        #result = [i[1] for i in tokenList]
         return tokenList
 
     def textToSentenceList(self,text):
@@ -205,8 +201,8 @@ class SplitText:
             listOfMatches.append(False)
         return listOfMatches
 
-    #Check a single sentence against a single pattern
     def checkPattern(self,pattern, nltkTag, newSentence, sentenceLocationList,originalSentence):
+        'Check a single sentence against a single pattern'
         result = re.match(pattern, newSentence)      
         if result is None:
             self.sentenceCount += 1
