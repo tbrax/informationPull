@@ -7,3 +7,5 @@ neural.py
 /pdata/wod.txt
 /pdata/savedPatterns.txt
 savedPatterns.txt
+/pdata/patternNeural
+/pdata/patternRegex

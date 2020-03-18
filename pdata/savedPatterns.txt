@@ -1,6 +1,0 @@
-FS:The cat ( Felis catus ) is a small carnivorous mammal . 
-FP:DET NOUN PUNCT PROPN NOUN PUNCT AUX DET ADJ ADJ NOUN PUNCT 
-SS:The cat is a mammal 
-SP:DET NOUN AUX DET NOUN 
-SI:0 1 6 7 10 
-END:
