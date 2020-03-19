@@ -92,33 +92,44 @@ class SplitText:
         return f
 
     def savePattern(self,fullList,shortList,articleName):
-        indxString = ""
-        sString = ""
-        sen = ""
-        senShort = ""
-        shortPOSString = ""
-        fullPOSString = ""
-        for i in shortList:
+        indxString = ''
+        fullRegex = ''
+        shortRegex = ''
+        fullSentence = ''
+        shortSentence = ''
+        shortPOSString = ''
+        fullPOSString = ''
+        for idx,i in enumerate(shortList):
             x = self.wordCommaSplit(i)
             #pString+="{1}|..|{0}|,,|".format(x[0],x[1])
+            shortRegex += ".*?({0})".format(x[1])
+            if (idx == len(shortList)-1):
+                shortRegex += ".*?"
             shortPOSString += "{0} ".format(x[1])
             indxString += "{0} ".format(x[2])
-            senShort += "{0} ".format(x[0])
-        for i in fullList:
+            shortSentence += "{0} ".format(x[0])
+        for idx,i in enumerate(fullList):
             x = self.wordCommaSplit(i)
             #sString+="{1}|..|{0}|,,|".format(x[0],x[1])
+            fullRegex += ".*?({0})".format(x[1])
+            if (idx == len(fullList)-1):
+                fullRegex += ".*?"
             fullPOSString += "{0} ".format(x[1])
-            sen += "{0} ".format(x[0])
+            fullSentence += "{0} ".format(x[0])
     
         f = self.namedFile(self.patternFolderNeural,articleName)
-        f.write("FS:{0}".format(sen))
+        f.write("FS:{0}".format(fullSentence))
         f.write("\n")
         f.write("FP:{0}".format(fullPOSString))
         f.write("\n")
-        f.write("SS:{0}".format(senShort))
+        f.write("FR:{0}".format(fullRegex))
+        f.write("\n")
+        f.write("SS:{0}".format(shortSentence))
         f.write("\n")
         f.write("SP:{0}".format(shortPOSString))
-        f.write("\n")   
+        f.write("\n")
+        f.write("SR:{0}".format(shortRegex))
+        f.write("\n")
         f.write("SI:{0}".format(indxString))
         f.write("\n")
         f.write("END:")
@@ -126,23 +137,31 @@ class SplitText:
         return 0
   
     def saveRegexPattern(self,fullList,shortList,articleName):
+        fullSentence = ""
+        shortSentence = ""
         pString = ""
         sString = ""
         for idx,value in enumerate(shortList):
             x = value.split(",")
             pString += ".*?({0})".format(x[1])
+            shortSentence += "{0} ".format(x[0])
             if (idx == len(shortList)-1):
                 pString += ".*?"
         for idx,value in enumerate(fullList):
             x = value.split(",")
             sString += ".*?({0})".format(x[1])
+            fullSentence += "{0} ".format(x[0])
             if (idx == len(fullList)-1):
                 sString += ".*?"
 
         f = self.namedFile(self.patternFolderRegex,articleName)
         f.write("SR:{0}".format(pString))
         f.write("\n")
+        f.write("SS:{0}".format(shortSentence))
+        f.write("\n")
         f.write("FR:{0}".format(sString))
+        f.write("\n")
+        f.write("FS:{0}".format(fullSentence))
         f.write("\n")
         f.write("END:")
 
@@ -150,7 +169,7 @@ class SplitText:
     def loadRegexPatterns(self):
         'Load Regex Patterns from file'
         ps = []
-        for filename in os.listdir(self.patternFolderRegex):
+        for filename in os.listdir(self.patternFolderNeural):
             with open(self.patternFolderRegex+'\\'+filename, "r", encoding="utf-8") as f:
                 for line in f:
                     if (line.startswith('SR:')):

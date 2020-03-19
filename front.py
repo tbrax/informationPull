@@ -20,11 +20,7 @@ def findTreeMatchesInArticle():
     return results
 
 def savePattern(full,short,stype,articleName):
-    if stype[0] == 'Regex':
-        if len(short) > 0:
-            tt.st.saveRegexPattern(full,short,articleName)
-        tt.st.saveRegexPattern(full,full,articleName)
-    elif stype[0] == 'Neural':
+    if stype[0] == 'Neural':
         if len(short) > 0:
             tt.st.savePattern(full,short,articleName)
         tt.st.savePattern(full,full,articleName)

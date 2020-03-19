@@ -153,8 +153,12 @@ class TextObject:
 
     def getColumn(self,lst,col):
         return [val[col] for val in lst]
+
     def getPatterns(self):
         return self.patterns
+
+    def listCompareValue(self,l0,l1):
+        return 0.0
 
     def findExactStructureMatches(self):
         text = self.getTextOnly(self.sentences)
@@ -163,7 +167,6 @@ class TextObject:
         POSList = []
         matchList = []
         if not patterns:
-            print('Patterns not loaded')
             return False
         for x in patterns:
             POSList.append([x['ShortPOS'],x['ShortSentence']])
@@ -171,7 +174,8 @@ class TextObject:
             xList = self.getColumn(x,1)
             for y in POSList:
                 yList = y[0].split(' ')
-                if (xList==yList):
+                compareNum = self.listCompareValue(xList,yList)
+                if (compareNum == 0.0):
                     textSen = ' '.join(self.getColumn(x,0))
                     savedSen = y[1]
                     resultDict = {
@@ -184,20 +188,21 @@ class TextObject:
         
 
     def findTreeMatches(self):
-        return self.findExactStructureMatches()
+        #return self.findExactStructureMatches()
         text = self.getTextOnly(self.sentences)
         patterns = self.getPatterns()
         matchList = []
         for x in text:
             for idy,y in enumerate(patterns):
-                if self.ch.compareTree(x,y['FullSentence']):
-                    reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
-                    resultDict = {
-                                    'Article Sentence':x,
-                                    'Full Sentence':y['FullSentence'],
-                                    'Reduced Article':reducedSen
-                                    }
-                    matchList.append(resultDict)
+                if 'ShortSentence' in y:
+                    if self.ch.compareTree(x,y['ShortSentence']):
+                        reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
+                        resultDict = {
+                                        'Article Sentence':x,
+                                        'Short Sentence':y['ShortSentence'],
+                                        'Reduced Article':reducedSen
+                                        }
+                        matchList.append(resultDict)
         return matchList
 
     def findNeuralMatches(self,resultType,lengthType):

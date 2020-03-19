@@ -50,13 +50,17 @@ class Chunking:
         tokensInFull = []
         tokensInArticle = []
         returnSentence = ''
+        print(docShort,indexList,fullSentence)
         for x in indexList:
-            tokensInFull.append(docFull[x])
+            try:
+                tokensInFull.append(docFull[x])
+            except:
+                #pront(docFull.__len__())
+                False
         for x in tokensInFull:
             find = self.findTokenObj(x,rootFull,rootArticle,rootArticle)
             tokensInArticle.append(find)
-        print(list(tokensInArticle))
-        
+
         for x in tokensInArticle:
             if x:
                 returnSentence += (x.text+' ')
@@ -113,18 +117,15 @@ class Chunking:
             return False
         bothLimitLeft = (a == a.left_edge and b == b.left_edge)
         bothLimitRight = (a == a.right_edge and b == b.right_edge)
-        #print(a,a.left_edge,a.right_edge,b,b.left_edge,b.right_edge)
+        #pront(a,a.left_edge,a.right_edge,b,b.left_edge,b.right_edge)
         if ((a is None and b is None)):
             return True 
         if a is not None and b is not None: 
             dataSame = (a.pos_ == b.pos_)
-            #print("Left")
             left = self.compareSubTree(depth+1,a.left_edge,b.left_edge)
-            #print("Right")
             right = self.compareSubTree(depth+1,a.right_edge,b.right_edge)
 
             ret = (dataSame and left and right)
-            print("Compare", ret)
             return ret
 
         return False
@@ -149,11 +150,11 @@ def main():
     #conference_text = ('He is interested in learning natural language processing')
     #conference_doc = ch.processText(conference_text)
     #for chunk in conference_doc.noun_chunks:
-    #    print (chunk)   
+    #    pront (chunk)   
     #for token in conference_doc:
         #print(token)
     #    print (token.text, token.tag_, token.head.text, token.dep_) 
-    #print(displacy.render(conference_doc, style='dep'))
+    #pront(displacy.render(conference_doc, style='dep'))
     sens = [
             'He is interested in learning natural language processing',
             'Men like cheese',
@@ -168,10 +169,9 @@ def main():
 
     ]
     #result = ch.compareTree(sens[4],sens[7])
-    #print(result)
 
     index = [0,2,3,4,5]
-    print(ch.constructReducedSentence(index,sens[5],sens[4],sens[3]))
+    #pront(ch.constructReducedSentence(index,sens[5],sens[4],sens[3]))
 
 
 if __name__== "__main__":

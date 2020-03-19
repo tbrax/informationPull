@@ -805,7 +805,7 @@ function addDocumentButtons()
     select1.appendChild(option3);
 
     patternButtonNeuralSpan.appendChild(select);
-    patternButtonNeuralSpan.appendChild(select1);
+    //patternButtonNeuralSpan.appendChild(select1);
 }
 
 function displayDocument(result)
