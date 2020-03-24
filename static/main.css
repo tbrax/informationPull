@@ -16,3 +16,10 @@
     display:inline-block;
     font-size: 13px;
 }
+
+.scrollmenu {
+    overflow-x: scroll;
+    overflow-y: hidden;
+    white-space: nowrap;
+
+  }

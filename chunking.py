@@ -1,9 +1,12 @@
 import spacy
+import pytextrank
+import nltk
 from spacy import displacy
 class Chunking:
     def __init__(self):
         self.nlp = spacy.load('en_core_web_sm')
         self.debug = False
+        self.oklist = ['ADJ','PUNCT','VERB','NOUN','CCONJ']
 
     def processText(self,text):
         'Returns a spacy text object'
@@ -37,6 +40,16 @@ class Chunking:
         return False
 
 
+    def reduceGuess(self,sentence):
+        docFull = self.nlp(sentence)
+        rootFull = [token for token in docFull if token.head == token][0]
+
+        
+
+        for tok in list(docFull):
+            print(tok)
+        return False
+
     def constructReducedSentence(self,indexList,articleSentence,fullSentence,shortSentence):
         'Takes a full sentence and turns it into a reduced one'
         docArticle = self.nlp(articleSentence)
@@ -50,17 +63,17 @@ class Chunking:
         tokensInFull = []
         tokensInArticle = []
         returnSentence = ''
-        print(docShort,indexList,fullSentence)
+        #pront(docShort,indexList,fullSentence)
         for x in indexList:
             try:
                 tokensInFull.append(docFull[x])
             except:
                 #pront(docFull.__len__())
-                False
+                True
         for x in tokensInFull:
             find = self.findTokenObj(x,rootFull,rootArticle,rootArticle)
             tokensInArticle.append(find)
-
+        #pront(tokensInArticle)
         for x in tokensInArticle:
             if x:
                 returnSentence += (x.text+' ')
@@ -86,26 +99,69 @@ class Chunking:
             return True
         return False
 
+    def posAcceptExcess(self,tok0):
+        if tok0.pos_ not in self.oklist:
+            return False
+        return True
+
+    def pront(self,msg):
+        if self.debug:
+            print(msg)
+
     def compareTokenObj(self,tok0,tok1):
         matchTotal = self.posMatch(tok0.pos_,tok1.pos_)
+        if not matchTotal:
+            return False
         if self.debug == True:
             if not matchTotal:
-                print("Failed")
-            print(tok0, tok0.pos_, tok1, tok1.pos_)
-            print(list(tok0.lefts),list(tok1.lefts))
-            print(list(tok0.rights),list(tok1.rights))
+                self.pront("Failed")
+            #self.pront(tok0, tok0.pos_, tok1, tok1.pos_)
+           # self.pront(list(tok0.lefts),list(tok1.lefts))
+            #self.pront(list(tok0.rights),list(tok1.rights))
 
-        for idx0,x0 in enumerate(tok0.lefts):
-            for idx1,x1 in enumerate(tok1.lefts):
-                if idx0 == idx1:
-                    if self.compareTokenObj(x0,x1) is False:
-                        matchTotal = False
+        l0 = list(tok0.lefts)
+        l1 = list(tok1.lefts)
+        
+        if len(l0) > len(l1):
+            for idx0,x0 in enumerate(l0[len(l1):]):
+                #print(x0)
+                if not self.posAcceptExcess(x0):
+                    #matchTotal = False
+                    return False
+        elif len(l1) > len(l0):
+            for idx0,x0 in enumerate(l1[len(l0):]):
+                if not self.posAcceptExcess(x0):
+                    #matchTotal = False
+                    return False
 
-        for idx0,x0 in enumerate(tok0.rights):
-            for idx1,x1 in enumerate(tok1.rights):
-                if idx0 == idx1:
-                    if self.compareTokenObj(x0,x1) is False:
-                        matchTotal = False     
+        l0 = list(tok0.rights)
+        l1 = list(tok1.rights)
+
+        if len(l0) > len(l1):
+            for idx0,x0 in enumerate(l0[len(l1):]):
+                if not self.posAcceptExcess(x0):
+                    #matchTotal = False
+                    return False
+        elif len(l1) > len(l0):
+            for idx0,x0 in enumerate(l1[len(l0):]):
+                if not self.posAcceptExcess(x0):
+                    #matchTotal = False
+                    return False
+
+        if matchTotal:
+            for idx0,x0 in enumerate(tok0.lefts):
+                for idx1,x1 in enumerate(tok1.lefts):
+                    if idx0 == idx1:
+                        if self.compareTokenObj(x0,x1) is False:
+                            #matchTotal = False
+                            return False
+        if matchTotal:
+            for idx0,x0 in enumerate(tok0.rights):
+                for idx1,x1 in enumerate(tok1.rights):
+                    if idx0 == idx1:
+                        if self.compareTokenObj(x0,x1) is False:
+                            #matchTotal = False     
+                            return False
         return matchTotal
 
     def compareToken(self,a,b):
@@ -141,23 +197,37 @@ class Chunking:
         #self.serve(sen0)
         return result
 
+    def exactMatch(self,sen0,sen1):
+        doc0 = self.nlp(sen0)
+        doc1 = self.nlp(sen1)
+        posList0 = []
+        posList1 = []
+
+        for token in doc0:
+            posList0.append(token.pos_)
+        for token in doc1:
+            posList1.append(token.pos_)
+
+        return posList0 == posList1
+
     def compareTree(self,sen0,sen1):
         'Compares two sentences to see if they have same tree'
         return self.compareTreeBool(sen0,sen1)
 
 def main():
+    #nltk.download()
     ch = Chunking()
     #conference_text = ('He is interested in learning natural language processing')
     #conference_doc = ch.processText(conference_text)
     #for chunk in conference_doc.noun_chunks:
     #    pront (chunk)   
     #for token in conference_doc:
-        #print(token)
-    #    print (token.text, token.tag_, token.head.text, token.dep_) 
+        #pront(token)
+    #    pront (token.text, token.tag_, token.head.text, token.dep_) 
     #pront(displacy.render(conference_doc, style='dep'))
     sens = [
             'He is interested in learning natural language processing',
-            'Men like cheese',
+            'Big hairy men like cheese',
             'Girls like green plants',
             'A lake is an area',
             "A blue lake is an area filled with water.",
@@ -166,12 +236,15 @@ def main():
             'A taco is a blue and gold traditional Mexican food',
             'A banana is an Australian fruit consisting of a yellow, stinky peel',
             'displaCy uses CSS and JavaScript to show you how computers understand language',
-
+            'The cat has no unique anatomical feature that is clearly responsible for the sound.',
+            'The cat ( Felis catus ) is a small carnivorous mammal .',
+            "The cat has no unique anatomical feature that is clearly responsible for the sound.",
     ]
-    #result = ch.compareTree(sens[4],sens[7])
-
+    #result = ch.compareTree(sens[7],sens[8])
+    #ch.reduceGuess(sens[1])
+    #print(result)
     index = [0,2,3,4,5]
-    #pront(ch.constructReducedSentence(index,sens[5],sens[4],sens[3]))
+    print(ch.constructReducedSentence(index,sens[5],sens[4],sens[3]))
 
 
 if __name__== "__main__":

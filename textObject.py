@@ -148,7 +148,10 @@ class TextObject:
         indexList = index.split(" ")
         indexs = []
         for x in indexList:
-            indexs.append(int(x))
+            try:
+                indexs.append(int(x))
+            except:
+                print(index,articleSentence,fullSentence,shortSentence)
         return self.ch.constructReducedSentence(indexs,articleSentence,fullSentence,shortSentence)
 
     def getColumn(self,lst,col):
@@ -157,8 +160,6 @@ class TextObject:
     def getPatterns(self):
         return self.patterns
 
-    def listCompareValue(self,l0,l1):
-        return 0.0
 
     def findExactStructureMatches(self):
         text = self.getTextOnly(self.sentences)
@@ -168,21 +169,37 @@ class TextObject:
         matchList = []
         if not patterns:
             return False
-        for x in patterns:
-            POSList.append([x['ShortPOS'],x['ShortSentence']])
-        for x in tks:
-            xList = self.getColumn(x,1)
-            for y in POSList:
-                yList = y[0].split(' ')
-                compareNum = self.listCompareValue(xList,yList)
-                if (compareNum == 0.0):
-                    textSen = ' '.join(self.getColumn(x,0))
-                    savedSen = y[1]
+
+        for x in text:
+            for y in patterns:
+                match = self.ch.exactMatch(x,y['ShortSentence'])
+                if match:
+                    reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
                     resultDict = {
-                                    'Article Sentence':textSen,
-                                    'Pattern':savedSen,
+                                   'Article Sentence':x,
+                                    'Pattern':y['ShortSentence'],
+                                    'Match':'Exact',
+                                    'Reduced Sentence':reducedSen
                                     }
                     matchList.append(resultDict)
+
+            
+        #for x in patterns:
+        #    POSList.append([x['ShortPOS'],x['ShortSentence']])
+        #for x in tks:
+        #    xList = self.getColumn(x,1)
+        #    for y in POSList:
+        #        yList = y[0].split(' ')
+        #        compareNum = self.listCompareValue(xList,yList)
+        #        if (compareNum == 1.0):
+        #            textSen = ' '.join(self.getColumn(x,0))
+        #            savedSen = y[1]
+        #            resultDict = {
+        #                            'Article Sentence':textSen,
+        #                            'Pattern':savedSen,
+        #                            'Match':'Exact',
+        #                            }
+        #            matchList.append(resultDict)
         return matchList
          
         
@@ -193,16 +210,24 @@ class TextObject:
         patterns = self.getPatterns()
         matchList = []
         for x in text:
+            added = False
             for idy,y in enumerate(patterns):
-                if 'ShortSentence' in y:
-                    if self.ch.compareTree(x,y['ShortSentence']):
-                        reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
-                        resultDict = {
-                                        'Article Sentence':x,
-                                        'Short Sentence':y['ShortSentence'],
-                                        'Reduced Article':reducedSen
-                                        }
-                        matchList.append(resultDict)
+                if not added:
+                    if 'ShortSentence' in y:
+                        if self.ch.compareTree(x,y['ShortSentence']):
+                            match = self.ch.exactMatch(x,y['ShortSentence'])         
+                            added = True
+                            #reducedSen = ''
+                            #reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
+                            resultDict = {
+                                            'Article Sentence':x,
+                                            'Short Sentence':y['ShortSentence'],
+                                            }
+                            if match:
+                                reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
+                                resultDict['Reduced Sentence'] = reducedSen
+                            matchList.append(resultDict)
+        print("Finish")
         return matchList
 
     def findNeuralMatches(self,resultType,lengthType):

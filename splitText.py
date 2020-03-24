@@ -106,7 +106,8 @@ class SplitText:
             if (idx == len(shortList)-1):
                 shortRegex += ".*?"
             shortPOSString += "{0} ".format(x[1])
-            indxString += "{0} ".format(x[2])
+            if x[2].isnumeric():
+                indxString += "{0} ".format(x[2])
             shortSentence += "{0} ".format(x[0])
         for idx,i in enumerate(fullList):
             x = self.wordCommaSplit(i)
