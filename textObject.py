@@ -3,6 +3,7 @@ from neuralSentence import NeuralClass
 from splitText import SplitText
 from getText import GetText
 from chunking import Chunking
+from joblib import Parallel, delayed
 
 import numpy as np
 
@@ -169,7 +170,7 @@ class TextObject:
         matchList = []
         if not patterns:
             return False
-
+        
         for x in text:
             for y in patterns:
                 match = self.ch.exactMatch(x,y['ShortSentence'])
@@ -203,32 +204,36 @@ class TextObject:
         return matchList
          
         
+    def treeMatchFunct(self,x,patterns,matchList):
+        added = False
+        for idy,y in enumerate(patterns):
+            if not added:
+                if 'ShortSentence' in y:
+                    if self.ch.compareTree(x,y['ShortSentence']):
+                        match = self.ch.exactMatch(x,y['ShortSentence'])         
+                        added = True
+                        #reducedSen = ''
+                        
+                        resultDict = {
+                                        'Article Sentence':x,
+                                        'Short Sentence':y['ShortSentence'],
+                                        }
+                        if y['FullSentence'] is not y['ShortSentence']:
+                            reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
+                            resultDict['Reduced Sentence'] = reducedSen        
+
+                        matchList.append(resultDict)
 
     def findTreeMatches(self):
+        return self.ch.compareTreeAll(self.getTextOnly(self.sentences),self.getPatterns())
         #return self.findExactStructureMatches()
-        text = self.getTextOnly(self.sentences)
-        patterns = self.getPatterns()
-        matchList = []
-        for x in text:
-            added = False
-            for idy,y in enumerate(patterns):
-                if not added:
-                    if 'ShortSentence' in y:
-                        if self.ch.compareTree(x,y['ShortSentence']):
-                            match = self.ch.exactMatch(x,y['ShortSentence'])         
-                            added = True
-                            #reducedSen = ''
-                            #reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
-                            resultDict = {
-                                            'Article Sentence':x,
-                                            'Short Sentence':y['ShortSentence'],
-                                            }
-                            if match:
-                                reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
-                                resultDict['Reduced Sentence'] = reducedSen
-                            matchList.append(resultDict)
-        print("Finish")
-        return matchList
+        #text = self.getTextOnly(self.sentences)
+        #patterns = self.getPatterns()
+        #matchList = []
+        #for x in text:
+        #    self.treeMatchFunct(x,patterns,matchList)
+        #print("Finish")
+        #return matchList
 
     def findNeuralMatches(self,resultType,lengthType):
         if self.textLoaded:
