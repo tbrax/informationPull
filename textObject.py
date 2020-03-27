@@ -228,7 +228,19 @@ class TextObject:
                         matchList.append(resultDict)
 
     def findTreeMatches(self):
-        return self.ch.compareTreeAll(self.getTextOnly(self.sentences),self.getPatterns())
+        matches = self.ch.compareTreeAll(self.getTextOnly(self.sentences),self.getPatterns())
+        f = open(self.resultFolder+'\\'+self.title+'-tree.txt', "a",encoding="utf-8")
+        for x in matches:
+            f.write('{0}:{1}'.format(self.nameListNeural[4],x[self.nameListNeural[4]]))
+            f.write("\n")
+            f.write('{0}:{1}'.format(self.nameListNeural[2],x[self.nameListNeural[2]]))
+            f.write("\n")
+            f.write('{0}:{1}'.format(self.nameListNeural[0],x[self.nameListNeural[0]]))
+            f.write("\n")
+            f.write('END:')
+            f.write("\n")
+
+        return matches
         #return self.findExactStructureMatches()
         #text = self.getTextOnly(self.sentences)
         #patterns = self.getPatterns()
@@ -301,8 +313,6 @@ class TextObject:
 
             matchList = []
 
-            
-            
             for idx, x in enumerate(results["POS"]):
                 for idy, y in enumerate(x):
                     #Text = results[]
@@ -331,18 +341,21 @@ class TextObject:
             #x[self.nameListNeural[0]] = str(x[self.nameListNeural[0]])
         return data
 
-    def writeMatched(self,data):
-        f = open(self.resultFolder+'\\'+self.title+'.txt', "a",encoding="utf-8")
+    def writeMatched(self,data,typed):
+        f = open(self.resultFolder+'\\'+self.title+typed+'.txt', "a",encoding="utf-8")
        # f.write(json.dumps(str(data)))
        # json_data = f.read()
         #data = json.loads(json_data)
         for x in data:
-            f.write('{0}:{1}'.format(self.nameListNeural[4],x[self.nameListNeural[4]]))
-            f.write("\n")
-            f.write('{0}:{1}'.format(self.nameListNeural[2],x[self.nameListNeural[2]]))
-            f.write("\n")
-            f.write('{0}:{1}'.format(self.nameListNeural[0],x[self.nameListNeural[0]]))
-            f.write("\n")
+            for key in x:
+                f.write('{0}:{1}'.format(key,x[key]))
+                f.write("\n")
+            #f.write('{0}:{1}'.format(self.nameListNeural[4],x[self.nameListNeural[4]]))
+            #f.write("\n")
+            #f.write('{0}:{1}'.format(self.nameListNeural[2],x[self.nameListNeural[2]]))
+            #f.write("\n")
+            #f.write('{0}:{1}'.format(self.nameListNeural[0],x[self.nameListNeural[0]]))
+            #f.write("\n")
             f.write('END:')
             f.write("\n")
             
@@ -354,7 +367,7 @@ class TextObject:
         #sortedArr = neuralMatchList
         #sortedArr.sort(key=lambda x: x[columnIndex],reverse=True)
         sortedArr = sorted(neuralMatchList, key = lambda i: i[self.nameListNeural[0]],reverse=True) 
-        self.writeMatched(sortedArr)
+        self.writeMatched(sortedArr,'-neural')
         return sortedArr
         
     def saveSentences(self,title,sentences):

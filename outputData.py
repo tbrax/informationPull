@@ -46,22 +46,27 @@ def loadResultDict(filename,nameList,folder):
 
 
 def main(): 
-    articleResultList = []
+    articleResultListNeural = []
     for filename in os.listdir(resultFolder):
-        name = filename.replace('.txt','')
-        resultDictList = loadResultDict(name+'.txt',nameListNeural,resultFolder)
-        try:
-            patternDictList = loadResultDict(name+'.txt',nameListPattern,patternFolder)
-            articleResultList.append([name,resultDictList,patternDictList])
-        except:
-            print('Please add pattern file back to folder')
+        if ('-neural' in filename):
+            name = filename.replace('-neural.txt','')
+            resultDictList = loadResultDict(name+'-neural.txt',nameListNeural,resultFolder)
+            try:
+                patternDictList = loadResultDict(name+'.txt',nameListPattern,patternFolder)
+                articleResultListNeural.append([name,resultDictList,patternDictList])
+            except:
+                print('Could not load {0}'.format(name+'.txt'))
+
+
+                
+
 
     
     #p = tt.getPatterns()
     #for x in p:
     #    print(x)
 
-    for x in articleResultList:
+    for x in articleResultListNeural:
         #print(x[0])
         #for y in x[2]:
         #    print(y)
@@ -75,17 +80,19 @@ def main():
                 sen1 = hand['FS'].replace(' ','')
                 if (sen0 == sen1):
                     match = hand
-            matchResultList.append([result['Article Text'], result['Value'], match])
+            matchResultList.append([x[0],result['Article Text'], result['Value'], match])
 
         neuralThere = []
         neuralNot = []
         for y in matchResultList:
-            if y[2]:
-                neuralThere.append(float(y[1]))
+            if y[3]:
+                neuralThere.append(float(y[2]))
             else:
-                neuralNot.append(float(y[1]))
+                neuralNot.append(float(y[2]))
+        print('Article name: ',y[0])
         print('Average of located sentences',averageOfList(neuralThere))
         print('Average of Other sentences',averageOfList(neuralNot))
+        #print('Total Average',averageOfList(neuralThere+neuralNot))
 
             
 
