@@ -1,4 +1,4 @@
-
+import json
 from neuralSentence import NeuralClass
 from splitText import SplitText
 from getText import GetText
@@ -28,6 +28,7 @@ class TextObject:
                                 "Compared"
                             ]
         self.notFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\notlist.txt"
+        self.resultFolder = 'C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\results'
         self.notList = []
         self.patterns = False
         self.load()
@@ -218,7 +219,9 @@ class TextObject:
                                         'Article Sentence':x,
                                         'Short Sentence':y['ShortSentence'],
                                         }
-                        if y['FullSentence'] is not y['ShortSentence']:
+                        if match:
+                            resultDict['Exact'] = 'Exact'
+                        if (y['FullSentence'] is not y['ShortSentence']) and match:
                             reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
                             resultDict['Reduced Sentence'] = reducedSen        
 
@@ -297,6 +300,9 @@ class TextObject:
                 results["Head"] = self.Neural.runAndPlotPatterns(matchPOS,grammarText)
 
             matchList = []
+
+            
+            
             for idx, x in enumerate(results["POS"]):
                 for idy, y in enumerate(x):
                     #Text = results[]
@@ -308,12 +314,14 @@ class TextObject:
                                     self.nameListNeural[3]:grammarText[idx],
                                     self.nameListNeural[4]:text[idx],
                                     self.nameListNeural[5]:resultType,
-                                    "POS Value":ps
                                 }
+                    
+                    
                   # matchList.append([ y,grammarPattern[idy],sentencesFull[idy],grammarText[idx],text[idx]])
                     matchList.append(resultDict)
             rt = self.convertListString(self.viewMatches(matchList))
-
+            
+            
             return self.removeTroublesomeSentencesNeural(rt,self.nameListNeural[4])
 
     def convertListString(self,data):
@@ -323,6 +331,21 @@ class TextObject:
             #x[self.nameListNeural[0]] = str(x[self.nameListNeural[0]])
         return data
 
+    def writeMatched(self,data):
+        f = open(self.resultFolder+'\\'+self.title+'.txt', "a",encoding="utf-8")
+       # f.write(json.dumps(str(data)))
+       # json_data = f.read()
+        #data = json.loads(json_data)
+        for x in data:
+            f.write('{0}:{1}'.format(self.nameListNeural[4],x[self.nameListNeural[4]]))
+            f.write("\n")
+            f.write('{0}:{1}'.format(self.nameListNeural[2],x[self.nameListNeural[2]]))
+            f.write("\n")
+            f.write('{0}:{1}'.format(self.nameListNeural[0],x[self.nameListNeural[0]]))
+            f.write("\n")
+            f.write('END:')
+            f.write("\n")
+            
 
 
     def viewMatches(self,neuralMatchList):
@@ -331,6 +354,7 @@ class TextObject:
         #sortedArr = neuralMatchList
         #sortedArr.sort(key=lambda x: x[columnIndex],reverse=True)
         sortedArr = sorted(neuralMatchList, key = lambda i: i[self.nameListNeural[0]],reverse=True) 
+        self.writeMatched(sortedArr)
         return sortedArr
         
     def saveSentences(self,title,sentences):

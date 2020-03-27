@@ -192,8 +192,9 @@ class SplitText:
 
     def sentenceToToken(self,sentence):
         'Turn sentence to list of POS tokens"The great big dog" becomes "(The,DT),(great,JJ),(Big,NNP),"(dog,NN)'
-        text = word_tokenize(sentence)
-        return self.wordToToken(text)
+        #text = word_tokenize(sentence)
+        #return self.wordToToken(text)
+        return self.sentenceTokenDisplay(sentence)
  
     def sentenceTokenDisplay(self,sentence):
         'Turns a sentence to tokens, and returns list'
