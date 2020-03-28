@@ -14,7 +14,7 @@ class SplitText:
         self.patternFolderRegex = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\patternRegex"
         self.patterns = []
         self.nameListRegex = [
-                                "Matching Text",
+                                "Reduced Sentence",
                                 "Regex Matched",
                                 "Article Tokens",
                                 "Article Sentence"
@@ -60,7 +60,7 @@ class SplitText:
                 elif (line.startswith('SI:')):
                     currDict['ShortIndex'] = line[3:].strip()
                 elif (line.startswith('SR:')):
-                    currDict['ShortRegex'] = line[2:].strip()
+                    currDict['ShortRegex'] = line[3:].strip()
                     #indxSen.append(line[2:].strip())
                 elif (line.startswith('END:')):
                     dictList.append(currDict)
@@ -221,6 +221,7 @@ class SplitText:
     def checkAllPatterns(self,nltkTag, newSentence, sentenceLocationList,originalSentence,patternList):
         'Compare sentence against all patterns and pront if match'
         listOfMatches = []
+        
         for pattern in patternList:
             result = self.checkPattern(pattern, nltkTag,newSentence, sentenceLocationList,originalSentence)
             if (result):
@@ -231,12 +232,13 @@ class SplitText:
 
     def checkPattern(self,pattern, nltkTag, newSentence, sentenceLocationList,originalSentence):
         'Check a single sentence against a single pattern'
+        #print(newSentence,pattern)
         result = re.match(pattern, newSentence)      
         if result is None:
             self.sentenceCount += 1
             return False
         else:
-
+            
             showStr = ""
             for counter, value in enumerate(result.groups()):
                 
@@ -260,6 +262,7 @@ class SplitText:
         newSentence = ""
         sentenceLocationCount = 0
         sentenceLocationList = []
+        
         for x in tokenList:
             characterAdd = x[1]+" "
             newSentence += characterAdd

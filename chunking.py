@@ -333,7 +333,7 @@ class Chunking:
             matchList.append(self.tt.st.checkSentenceRegex(sentence,regexlist))
         #result = re.match(pattern, newSentence) 
 
-        return False
+        return matchList
 
     def compareTreeAll(self,articleList,PatternList):
         articleDocs = []
