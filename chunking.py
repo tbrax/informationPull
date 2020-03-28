@@ -1,3 +1,4 @@
+import re
 import spacy
 import pytextrank
 import nltk
@@ -11,7 +12,9 @@ class Chunking:
         self.posList = [
                         ['NOUN','PROPN'],
                         ]
-
+        self.tt = False
+    def addTT(self,tt):
+        self.tt = tt
     def processText(self,text):
         'Returns a spacy text object'
         return self.nlp(text)
@@ -315,6 +318,22 @@ class Chunking:
         root0 = [token for token in doc0 if token.head == token][0]
         root1 = [token for token in doc1 if token.head == token][0]
         return self.compareTokenObj(root0,root1)
+
+    def compareRegexAll(self,articleList,patternList):
+        articleDocs = []
+        matchList = []
+
+        regexlist = []
+        for x in patternList:
+            if 'ShortRegex' in x:
+                regexlist.append(x['ShortRegex'])
+
+        matchList = []
+        for sentence in articleList:
+            matchList.append(self.tt.st.checkSentenceRegex(sentence,regexlist))
+        #result = re.match(pattern, newSentence) 
+
+        return False
 
     def compareTreeAll(self,articleList,PatternList):
         articleDocs = []

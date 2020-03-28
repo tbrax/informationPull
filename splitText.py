@@ -59,6 +59,8 @@ class SplitText:
                     #shortSen.append(line[2:].strip())
                 elif (line.startswith('SI:')):
                     currDict['ShortIndex'] = line[3:].strip()
+                elif (line.startswith('SR:')):
+                    currDict['ShortRegex'] = line[2:].strip()
                     #indxSen.append(line[2:].strip())
                 elif (line.startswith('END:')):
                     dictList.append(currDict)
@@ -178,6 +180,7 @@ class SplitText:
         return ps
   
     def getRegexPatterns(self):
+        return False
         return self.loadRegexPatterns()
 
     def wordToToken(self,wordList):
@@ -205,8 +208,8 @@ class SplitText:
         return sent_tokenize(text)
 
     #Turn sentence 
-    def checkSentenceRegex(self,sentence):
-        result = self.checkListofWordsRegex(self.sentenceToToken(sentence),sentence)
+    def checkSentenceRegex(self,sentence,patternList):
+        result = self.checkListofWordsRegex(self.sentenceToToken(sentence),sentence,patternList)
         return result
 
     def findInList(self,givenList, item):
@@ -215,10 +218,10 @@ class SplitText:
         except ValueError:
             return -1
 
-    def checkAllPatterns(self,nltkTag, newSentence, sentenceLocationList,originalSentence):
+    def checkAllPatterns(self,nltkTag, newSentence, sentenceLocationList,originalSentence,patternList):
         'Compare sentence against all patterns and pront if match'
         listOfMatches = []
-        for pattern in self.getRegexPatterns():
+        for pattern in patternList:
             result = self.checkPattern(pattern, nltkTag,newSentence, sentenceLocationList,originalSentence)
             if (result):
                 listOfMatches.append(result)
@@ -253,7 +256,7 @@ class SplitText:
             return resultDict
         return False
 
-    def checkListofWordsRegex(self,tokenList,originalSentence):
+    def checkListofWordsRegex(self,tokenList,originalSentence,patternList):
         newSentence = ""
         sentenceLocationCount = 0
         sentenceLocationList = []
@@ -263,7 +266,7 @@ class SplitText:
             sentenceLocationList.append(sentenceLocationCount)
             sentenceLocationCount += len(characterAdd)
 
-        patternMatches = self.checkAllPatterns(tokenList,newSentence, sentenceLocationList,originalSentence)
+        patternMatches = self.checkAllPatterns(tokenList,newSentence, sentenceLocationList,originalSentence,patternList)
         return patternMatches
         #pront(result.group())
         #pront(result.group(1))
@@ -272,14 +275,15 @@ class SplitText:
 
     def findRegexMatches(self,inputText):
         matchList = []
-        if (not inputText) or (inputText == ""):
-            return False
+        print(inputText)
+        #if (not inputText) or (inputText == ""):
+        #    return False
 
-        sentences = sent_tokenize(inputText)
-        for x in sentences:
-            matchList.append(self.checkSentenceRegex(x))
-        if (not matchList):
-            return False
+        #sentences = sent_tokenize(inputText)
+        #for x in sentences:
+        #    matchList.append(self.checkSentenceRegex(x))
+        #if (not matchList):
+        #    return False
         return matchList
 
     def readFile(self,path):

@@ -45,8 +45,8 @@ def analyzeRegexList(sentenceList):
     return tt.sentenceTokenDisplayList(sentenceList)
 
 def findPatternMatchesInArticle(articleName):
-    art = tt.gt.getArticle(articleName)
-    matches = tt.findRegexMatches(art[1])
+    #art = tt.gt.getArticle(articleName)
+    matches = tt.findRegexMatches()
     return matches
 
 

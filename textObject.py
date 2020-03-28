@@ -19,12 +19,13 @@ class TextObject:
         self.st = SplitText(self)
         self.gt = GetText()
         self.ch = Chunking()
+        self.ch.addTT(self)
         self.nameListNeural = [
                                 "Value",
                                 "Pattern Grammar",
                                 "Pattern Sentence",
                                 "Article Grammar",
-                                "Article Text",
+                                "Article Sentence",
                                 "Compared"
                             ]
         self.notFile = "C:\\Users\\trace\\projects\\python\\masters\\informationPull\\pdata\\notlist.txt"
@@ -126,10 +127,16 @@ class TextObject:
         return matchList
 
 
-    def findRegexMatches(self,inputText):
-        rt = self.st.findRegexMatches(inputText)
+    def findRegexMatches(self):
+        articleList = self.getTextOnly(self.sentences)        
+        patternList = self.getPatterns()
 
-        return self.removeTroublesomeSentencesRegex(rt,self.st.nameListRegex[3])
+        matches = self.ch.compareRegexAll(articleList,patternList)
+        #rt = self.st.findRegexMatches(inputText)
+        #rtNoTrouble = self.removeTroublesomeSentencesRegex(rt,self.st.nameListRegex[3])
+        #self.writeMatched(rtNoTrouble,'-regex')
+        #return rtNoTrouble
+        return matches
 
 
     def findNeuralMatchesText(self):
@@ -229,26 +236,8 @@ class TextObject:
 
     def findTreeMatches(self):
         matches = self.ch.compareTreeAll(self.getTextOnly(self.sentences),self.getPatterns())
-        f = open(self.resultFolder+'\\'+self.title+'-tree.txt', "a",encoding="utf-8")
-        for x in matches:
-            f.write('{0}:{1}'.format(self.nameListNeural[4],x[self.nameListNeural[4]]))
-            f.write("\n")
-            f.write('{0}:{1}'.format(self.nameListNeural[2],x[self.nameListNeural[2]]))
-            f.write("\n")
-            f.write('{0}:{1}'.format(self.nameListNeural[0],x[self.nameListNeural[0]]))
-            f.write("\n")
-            f.write('END:')
-            f.write("\n")
-
+        self.writeMatched(matches,'-tree')
         return matches
-        #return self.findExactStructureMatches()
-        #text = self.getTextOnly(self.sentences)
-        #patterns = self.getPatterns()
-        #matchList = []
-        #for x in text:
-        #    self.treeMatchFunct(x,patterns,matchList)
-        #print("Finish")
-        #return matchList
 
     def findNeuralMatches(self,resultType,lengthType):
         if self.textLoaded:
@@ -342,7 +331,11 @@ class TextObject:
         return data
 
     def writeMatched(self,data,typed):
-        f = open(self.resultFolder+'\\'+self.title+typed+'.txt', "a",encoding="utf-8")
+
+        titleEnd= self.title
+        if titleEnd.endswith(' '):
+            titleEnd = titleEnd[:-1]
+        f = open('{0}\\{1}{2}.txt'.format(self.resultFolder,titleEnd,typed), "a",encoding="utf-8")
        # f.write(json.dumps(str(data)))
        # json_data = f.read()
         #data = json.loads(json_data)
