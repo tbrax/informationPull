@@ -132,17 +132,19 @@ class TextObject:
         patternList = self.getPatterns()
 
         matches = self.ch.compareRegexAll(articleList,patternList)
+
+        writeList = []
+        for x in matches:
+            if x:
+                writeList.append(x[0])
+
+        self.writeMatched(writeList,'-regex')
         #rt = self.st.findRegexMatches(inputText)
         #rtNoTrouble = self.removeTroublesomeSentencesRegex(rt,self.st.nameListRegex[3])
         #self.writeMatched(rtNoTrouble,'-regex')
         #return rtNoTrouble
         return matches
 
-
-    def findNeuralMatchesText(self):
-        return 0
-    def findNeuralMatchesPOS(self):
-        return 0
 
     def getTextOnly(self,textDict):
         textList = []
@@ -339,10 +341,14 @@ class TextObject:
        # f.write(json.dumps(str(data)))
        # json_data = f.read()
         #data = json.loads(json_data)
+        
         for x in data:
-            for key in x:
-                f.write('{0}:{1}'.format(key,x[key]))
-                f.write("\n")
+            
+            if x:
+                for key in x:
+                    
+                    f.write('{0}:{1}'.format(key,x[key]))
+                    f.write("\n")
             #f.write('{0}:{1}'.format(self.nameListNeural[4],x[self.nameListNeural[4]]))
             #f.write("\n")
             #f.write('{0}:{1}'.format(self.nameListNeural[2],x[self.nameListNeural[2]]))

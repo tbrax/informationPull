@@ -20,7 +20,9 @@ nameListTree = [
                     'Reduced Sentence'
                     ]
 nameListRegex = [
-
+                    'Article Sentence',
+                    'Reduced Sentence',
+                    'Regex Matched'
                     ]
     
 endName = 'END:'
@@ -71,101 +73,162 @@ def loadFileType(typeName,nameList):
 
 
 
-def displayNeuralResults(resultList):
+def displayNeuralResults(art,resultList):
      for x in resultList:
-        matchResultList = []
-        for result in x[1]:
-            match = False
-            for hand in x[2]:
-                sen0 = result['Article Sentence'].replace(' ','')
-                sen1 = hand['FS'].replace(' ','')
-                if (sen0 == sen1):
-                    match = hand
-            #r0 = result.get('Article Sentence',False)
-            #r1 = result.get('Value',False)
-            matchResultList.append([x[0], result, match])
-
-        thereList = []
-        notList = []
-        for y in matchResultList:
-            if y[2]:
-                thereList.append(float(y[1]['Value']))
-            else:
-                notList.append(float(y[1]['Value']))
-
-        print('Neural results for: ',y[0])
-        print('Average of located sentences',averageOfList(thereList))
-        print('Average of Other sentences',averageOfList(notList))
-        #print('Total Average',averageOfList(neuralThere+neuralNot))
-
-def displayTreeResults(resultList):
-    for x in resultList:
-        matchResultList = []
-        matchHandList = []
-        #######
-        for result in x[1]:
-            match = False
-            for hand in x[2]:
-                sen0 = result['Article Sentence'].replace(' ','')
-                sen1 = hand['SS'].replace(' ','')
-                if (sen0 == sen1):
-                    match = hand               
-
-            matchResultList.append([x[0], result, match])
-
-        for hand in x[2]:
-            match = False
+        if x[0] == art:
+            matchResultList = []
             for result in x[1]:
-                sen0 = result['Article Sentence'].replace(' ','')
-                sen1 = hand['SS'].replace(' ','')
-                if (sen0 == sen1):
-                    match = result
+                match = False
+                for hand in x[2]:
+                    sen0 = result['Article Sentence'].replace(' ','')
+                    sen1 = hand['FS'].replace(' ','')
+                    if (sen0 == sen1):
+                        match = hand
+                #r0 = result.get('Article Sentence',False)
+                #r1 = result.get('Value',False)
+                matchResultList.append([x[0], result, match])
 
-            matchHandList.append([x[0], match, hand])
+            thereList = []
+            notList = []
+            for y in matchResultList:
+                if y[2]:
+                    thereList.append(float(y[1]['Value']))
+                else:
+                    notList.append(float(y[1]['Value']))
 
-        matchedHand = []
-        extraHand = []
-        matchedResult = []
-        extraResult = []
+            print('Neural results for: ',y[0])
+            print('Average of located sentences',averageOfList(thereList))
+            print('Average of Other sentences',averageOfList(notList))
+            #print('Total Average',averageOfList(neuralThere+neuralNot))
 
-        for y in matchHandList:
-            if y[1]:
-                matchedHand.append(y)
-            else:
-                extraHand.append(y)
+def displayTreeResults(art,resultList):
+    for x in resultList:
+        if x[0] == art:
+            matchResultList = []
+            matchHandList = []
+            #######
+            for result in x[1]:
+                match = False
+                for hand in x[2]:
+                    sen0 = result['Article Sentence'].replace(' ','')
+                    sen1 = hand['SS'].replace(' ','')
+                    if (sen0 == sen1):
+                        match = hand               
 
-        for y in matchResultList:
-            if y[2]:
-                matchedResult.append(y)
-            else:
-                extraResult.append(y)
-        
-        print('Tree results for: ',y[0])
-        print('Total Hand Picked Values', len(matchHandList))
+                matchResultList.append([x[0], result, match])
 
+            for hand in x[2]:
+                match = False
+                for result in x[1]:
+                    sen0 = result['Article Sentence'].replace(' ','')
+                    sen1 = hand['SS'].replace(' ','')
+                    if (sen0 == sen1):
+                        match = result
 
-        print('Matched: ',len(matchedHand))
-        print('Hand Missed: ', len(extraHand))
-        
+                matchHandList.append([x[0], match, hand])
 
-        extraNoDuplicates = []
-        for x in extraResult:
-            sen = x[1]['Article Sentence']
-            if sen not in extraNoDuplicates:
-                extraNoDuplicates.append(sen)
+            matchedHand = []
+            extraHand = []
+            matchedResult = []
+            extraResult = []
 
-        print('Result Extra: ',len(extraNoDuplicates))
-        for x in extraNoDuplicates:
-            print('"{0}"'.format(x))
+            for y in matchHandList:
+                if y[1]:
+                    matchedHand.append(y)
+                else:
+                    extraHand.append(y)
+
+            for y in matchResultList:
+                if y[2]:
+                    matchedResult.append(y)
+                else:
+                    extraResult.append(y)
             
-def displayRegexResults(resultList):
-    print("Nothing")
+            print('Tree results for: ',y[0])
+            print('Total Hand Picked Values', len(matchHandList))
+            print('Matched: ',len(matchedHand))
+            print('Hand Missed: ', len(extraHand))
+            
+            extraNoDuplicates = []
+            for y in extraResult:
+                sen = y[1]['Article Sentence']
+                if sen not in extraNoDuplicates:
+                    extraNoDuplicates.append(sen)
+
+            print('Result Extra: ',len(extraNoDuplicates))
+            for y in extraNoDuplicates:
+                print('"{0}"'.format(y))
+            
+def displayRegexResults(art,resultList):
+    
+    for x in resultList:
+
+        if x[0] == art:
+            matchResultList = []
+            matchHandList = []
+            #######
+            for result in x[1]:
+                match = False
+                if len(result) > 0:
+                    for hand in x[2]:
+                        sen0 = result['Article Sentence'].replace(' ','')
+
+                        sen1 = hand['SS'].replace(' ','')
+                        if (sen0 == sen1):
+                            match = hand               
+
+                matchResultList.append([x[0], result, match])
+
+            for hand in x[2]:
+                match = False
+                for result in x[1]:
+                    if len(result) > 0:
+                        sen0 = result['Article Sentence'].replace(' ','')
+                        sen1 = hand['SS'].replace(' ','')
+                        if (sen0 == sen1):
+                            match = result
+
+                matchHandList.append([x[0], match, hand])
+
+            matchedHand = []
+            extraHand = []
+            matchedResult = []
+            extraResult = []
+
+            for y in matchHandList:
+                if y[1]:
+                    matchedHand.append(y)
+                else:
+                    extraHand.append(y)
+
+            for y in matchResultList:
+                if y[2]:
+                    matchedResult.append(y)
+                else:
+                    extraResult.append(y)
+            
+            print('Regex results for: ',y[0])
+            print('Total Hand Picked Values', len(matchHandList))
+            print('Matched: ',len(matchedHand))
+            print('Hand Missed: ', len(extraHand))
+            
+            extraNoDuplicates = []
+            for y in extraResult:
+                if len(y[1]) > 0:
+                    sen = y[1]['Article Sentence']
+                    if sen not in extraNoDuplicates:
+                        extraNoDuplicates.append(sen)
+
+            print('Result Extra: ',len(extraNoDuplicates))
+            for y in extraNoDuplicates:
+                #False
+                print('"{0}"'.format(y))
 
 
 def main(): 
-    displayNeuralResults(loadFileType('-neural',nameListNeural))
-    displayTreeResults(loadFileType('-tree',nameListTree))
-    #loadFileType('-regex',nameListRegex)
+    #displayNeuralResults('cat',loadFileType('-neural',nameListNeural))
+    #displayTreeResults('cat',loadFileType('-tree',nameListTree))
+    displayRegexResults('cat',loadFileType('-regex',nameListRegex))
 
 
    
