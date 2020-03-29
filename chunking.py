@@ -338,6 +338,7 @@ class Chunking:
         matchList = []
         for idx,sentence in enumerate(articleList):
             print(idx)
+            print(sentence)
             matchList.append(self.tt.st.checkSentenceRegex(sentence,regexList))
         #result = re.match(pattern, newSentence) 
 

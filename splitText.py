@@ -1,8 +1,9 @@
 import os
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
-import sys
-import re2
+from timeit import default_timer as timer
+
+import re
 
 #import re
 
@@ -227,10 +228,20 @@ class SplitText:
         'Compare sentence against all patterns and pront if match'
         listOfMatches = []
         
-        for pattern in patternList:
+        totalP = len(patternList)
+        start = timer()
+        
+        
+        for idx,pattern in enumerate(patternList):
+            print('{0} of {1}'.format(idx,totalP))
             result = self.checkPattern(pattern, nltkTag,newSentence, sentenceLocationList,originalSentence)
+            end = timer()
+            
             if (result):
                 listOfMatches.append(result)
+            if (end - start) > 0.1:
+                break
+        print('Finished patterns')
         if len(listOfMatches) == 0:
             listOfMatches.append(False)
         return listOfMatches
