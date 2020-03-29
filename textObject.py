@@ -241,7 +241,8 @@ class TextObject:
     def findTreeMatches(self):
         matches = self.ch.compareTreeAll(self.getTextOnly(self.sentences),self.getPatterns())
         self.writeMatched(matches,'-tree')
-        return matches
+        matchesr = self.removeTroublesomeSentencesNeural(matches,'Article Sentence')
+        return matchesr
 
     def findNeuralMatches(self,resultType,lengthType):
         if self.textLoaded:

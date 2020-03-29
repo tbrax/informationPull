@@ -251,10 +251,10 @@ def displayRegexResults(art,resultList):
 
 
 def main(): 
-    art = 'oven'
+    art = 'sidewalk'
     #displayNeuralResults(art,loadFileType('-neural',nameListNeural))
-    displayTreeResults(art,loadFileType('-tree',nameListTree))
-    #displayRegexResults(art,loadFileType('-regex',nameListRegex))
+    #displayTreeResults(art,loadFileType('-tree',nameListTree))
+    displayRegexResults(art,loadFileType('-regex',nameListRegex))
 
 
    

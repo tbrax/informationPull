@@ -233,7 +233,7 @@ class SplitText:
         
         
         for idx,pattern in enumerate(patternList):
-            print('{0} of {1}'.format(idx,totalP))
+            #print('{0} of {1}'.format(idx,totalP))
             result = self.checkPattern(pattern, nltkTag,newSentence, sentenceLocationList,originalSentence)
             end = timer()
             
