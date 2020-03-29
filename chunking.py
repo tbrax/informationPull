@@ -297,7 +297,10 @@ class Chunking:
         #self.serve(sen0)
         return result
 
-    def exactMatch(self,doc0,doc1):
+    def exactMatch(self,sen0,sen1):
+        return self.exactMatchDoc(self.nlp(sen0),self.nlp(sen1))
+
+    def exactMatchDoc(self,doc0,doc1):
 
         posList0 = []
         posList1 = []
@@ -323,14 +326,19 @@ class Chunking:
         articleDocs = []
         matchList = []
 
-        regexlist = []
+        regexList = []
         for x in patternList:
             if 'ShortRegex' in x:
-                regexlist.append(x['ShortRegex'])
+                regexList.append(x['ShortRegex'])
 
+
+        print('Num of sentences: ',len(articleList))
+        print('Num of patterns: ',len(regexList))
+        print('Total Checks: ',len(articleList)*len(regexList))
         matchList = []
-        for sentence in articleList:
-            matchList.append(self.tt.st.checkSentenceRegex(sentence,regexlist))
+        for idx,sentence in enumerate(articleList):
+            print(idx)
+            matchList.append(self.tt.st.checkSentenceRegex(sentence,regexList))
         #result = re.match(pattern, newSentence) 
 
         return matchList
@@ -349,6 +357,9 @@ class Chunking:
                                         'Article Sentence':x,
                                         'Short Sentence':y['ShortSentence'],
                                         } 
+                    match = self.exactMatchDoc(doc0,articleDocs[idx])
+                    if match:
+                            resultDict['Exact'] = 'Exact'
                     if (y['FullSentence'] is not y['ShortSentence']):
                             reducedSen = self.constructReducedSentence(y['ShortIndex'],articleDocs[idx],y['FullSentence'],doc0)
                             resultDict['Reduced Sentence'] = reducedSen  

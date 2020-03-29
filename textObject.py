@@ -128,6 +128,7 @@ class TextObject:
 
 
     def findRegexMatches(self):
+        print('Finding Regex Matches')
         articleList = self.getTextOnly(self.sentences)        
         patternList = self.getPatterns()
 
@@ -215,26 +216,27 @@ class TextObject:
          
         
     def treeMatchFunct(self,x,patterns,matchList):
-        added = False
-        for idy,y in enumerate(patterns):
-            if not added:
-                if 'ShortSentence' in y:
-                    if self.ch.compareTree(x,y['ShortSentence']):
-                        match = self.ch.exactMatch(x,y['ShortSentence'])         
-                        added = True
+        return False
+        #added = False
+        #for idy,y in enumerate(patterns):
+        #    if not added:
+        #        if 'ShortSentence' in y:
+        #            if self.ch.compareTree(x,y['ShortSentence']):
+        #                match = self.ch.exactMatch(x,y['ShortSentence'])         
+        #                added = True
                         #reducedSen = ''
                         
-                        resultDict = {
-                                        'Article Sentence':x,
-                                        'Short Sentence':y['ShortSentence'],
-                                        }
-                        if match:
-                            resultDict['Exact'] = 'Exact'
-                        if (y['FullSentence'] is not y['ShortSentence']) and match:
-                            reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
-                            resultDict['Reduced Sentence'] = reducedSen        
+        #                resultDict = {
+        #                                'Article Sentence':x,
+        #                                'Short Sentence':y['ShortSentence'],
+        #                                }
+        #                if match:
+        #                    resultDict['Exact'] = 'Exact'
+        #                if (y['FullSentence'] is not y['ShortSentence']) and match:
+        #                    reducedSen = self.constructReducedSentence(y['ShortIndex'],x,y['FullSentence'],y['ShortSentence'])
+        #                    resultDict['Reduced Sentence'] = reducedSen        
 
-                        matchList.append(resultDict)
+        #                matchList.append(resultDict)
 
     def findTreeMatches(self):
         matches = self.ch.compareTreeAll(self.getTextOnly(self.sentences),self.getPatterns())

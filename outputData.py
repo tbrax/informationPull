@@ -71,11 +71,17 @@ def loadFileType(typeName,nameList):
     return articleResultList
 
 
-
+def writeFileResult(numList,name):
+    with open('{0}\\{1}'.format(resultFolder,'{0}.txt'.format(name)), "w", encoding="utf-8") as f:
+        for num in numList:
+            f.write('{0}'.format(num))
+            f.write('\n')
+    
 
 def displayNeuralResults(art,resultList):
      for x in resultList:
         if x[0] == art:
+            print('TOTAL', len(x[2]))
             matchResultList = []
             for result in x[1]:
                 match = False
@@ -84,6 +90,7 @@ def displayNeuralResults(art,resultList):
                     sen1 = hand['FS'].replace(' ','')
                     if (sen0 == sen1):
                         match = hand
+                #print('Could not find', result['Article Sentence'] )
                 #r0 = result.get('Article Sentence',False)
                 #r1 = result.get('Value',False)
                 matchResultList.append([x[0], result, match])
@@ -92,11 +99,19 @@ def displayNeuralResults(art,resultList):
             notList = []
             for y in matchResultList:
                 if y[2]:
-                    thereList.append(float(y[1]['Value']))
+                    sen0 = y[1]['Article Sentence']
+                    sen1 = y[2]['FS']
+                    val = float(y[1]['Value'])
+                    thereList.append(val)
                 else:
-                    notList.append(float(y[1]['Value']))
+                    sen0 = y[1]['Article Sentence']
+                    sen1 = y[2]
+                    val = float(y[1]['Value'])
+                    notList.append(val)
 
-            print('Neural results for: ',y[0])
+            writeFileResult(thereList,'there')
+            writeFileResult(notList,'not')
+            print('Neural results for: ',x[0])
             print('Average of located sentences',averageOfList(thereList))
             print('Average of Other sentences',averageOfList(notList))
             #print('Total Average',averageOfList(neuralThere+neuralNot))
@@ -112,25 +127,28 @@ def displayTreeResults(art,resultList):
                 for hand in x[2]:
                     sen0 = result['Article Sentence'].replace(' ','')
                     sen1 = hand['SS'].replace(' ','')
+                    ex = result.get('Exact',False)
                     if (sen0 == sen1):
                         match = hand               
 
-                matchResultList.append([x[0], result, match])
+                matchResultList.append([x[0], result, match,ex])
 
             for hand in x[2]:
                 match = False
                 for result in x[1]:
                     sen0 = result['Article Sentence'].replace(' ','')
                     sen1 = hand['SS'].replace(' ','')
+                    ex = result.get('Exact',False)
                     if (sen0 == sen1):
                         match = result
 
-                matchHandList.append([x[0], match, hand])
+                matchHandList.append([x[0], match, hand,ex])
 
             matchedHand = []
             extraHand = []
             matchedResult = []
             extraResult = []
+            exactMatch = []
 
             for y in matchHandList:
                 if y[1]:
@@ -139,6 +157,8 @@ def displayTreeResults(art,resultList):
                     extraHand.append(y)
 
             for y in matchResultList:
+                if y[3]:
+                    exactMatch.append(y)
                 if y[2]:
                     matchedResult.append(y)
                 else:
@@ -149,6 +169,7 @@ def displayTreeResults(art,resultList):
             print('Matched: ',len(matchedHand))
             print('Hand Missed: ', len(extraHand))
             
+            
             extraNoDuplicates = []
             for y in extraResult:
                 sen = y[1]['Article Sentence']
@@ -157,6 +178,10 @@ def displayTreeResults(art,resultList):
 
             print('Result Extra: ',len(extraNoDuplicates))
             for y in extraNoDuplicates:
+                print('"{0}"'.format(y))
+
+            print('Exact Matches: ',len(exactMatch))
+            for y in exactMatch:
                 print('"{0}"'.format(y))
             
 def displayRegexResults(art,resultList):
@@ -226,22 +251,15 @@ def displayRegexResults(art,resultList):
 
 
 def main(): 
-    #displayNeuralResults('cat',loadFileType('-neural',nameListNeural))
-    #displayTreeResults('cat',loadFileType('-tree',nameListTree))
-    displayRegexResults('cat',loadFileType('-regex',nameListRegex))
+    art = 'oven'
+    #displayNeuralResults(art,loadFileType('-neural',nameListNeural))
+    displayTreeResults(art,loadFileType('-tree',nameListTree))
+    #displayRegexResults(art,loadFileType('-regex',nameListRegex))
 
 
    
 
         
-
-            
-
-            
-        
-        
-
-
 
 if __name__== "__main__":
     main()

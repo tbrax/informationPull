@@ -1,7 +1,11 @@
 import os
 import nltk
 from nltk.tokenize import word_tokenize, sent_tokenize
-import re
+import sys
+import re2
+
+#import re
+
 import neuralSentence
 
 class SplitText:
@@ -209,7 +213,8 @@ class SplitText:
 
     #Turn sentence 
     def checkSentenceRegex(self,sentence,patternList):
-        result = self.checkListofWordsRegex(self.sentenceToToken(sentence),sentence,patternList)
+        tks = self.sentenceToToken(sentence)
+        result = self.checkListofWordsRegex(tks,sentence,patternList)
         return result
 
     def findInList(self,givenList, item):
