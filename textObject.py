@@ -325,8 +325,18 @@ class TextObject:
                     matchList.append(resultDict)
             rt = self.convertListString(self.viewMatches(matchList))
             
+            rem = self.removeTroublesomeSentencesNeural(rt,self.nameListNeural[4])
+            rems = rem[:100]
             
-            return self.removeTroublesomeSentencesNeural(rt,self.nameListNeural[4])
+            noDupes = []
+            for x in rems:
+                ok = True
+                for y in noDupes:
+                    if x[self.nameListNeural[4]] == y[self.nameListNeural[4]]:
+                        ok = False
+                if ok:
+                    noDupes.append(x)
+            return noDupes
 
     def convertListString(self,data):
         for x in data:

@@ -323,13 +323,15 @@ class Chunking:
         return self.compareTokenObj(root0,root1)
 
     def compareRegexAll(self,articleList,patternList):
+        #print('Check Regexes')
         articleDocs = []
         matchList = []
 
         regexList = []
         for x in patternList:
             if 'ShortRegex' in x:
-                regexList.append(x['ShortRegex'])
+                if x['ShortRegex'] not in regexList:
+                    regexList.append(x['ShortRegex'])
 
 
         print('Num of sentences: ',len(articleList))
@@ -337,8 +339,8 @@ class Chunking:
         print('Total Checks: ',len(articleList)*len(regexList))
         matchList = []
         for idx,sentence in enumerate(articleList):
-            print(idx)
-            print(sentence)
+            #print(idx)
+            #print(sentence)
             matchList.append(self.tt.st.checkSentenceRegex(sentence,regexList))
         #result = re.match(pattern, newSentence) 
 

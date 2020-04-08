@@ -87,14 +87,15 @@ getSentenceString()
 getSentenceConstructionString()
 {
     var sen ="";
-    for (let x in this.sentenceConstruction)
+    for (let x in this.sentenceShort)
     {
-        sen += this.sentenceConstruction[x][0];
-        if (x !=this.sentenceConstruction.length-1)
+        sen += this.sentenceShort[x][0];
+        if (x !=this.sentenceShort.length-1)
         {
             sen += " ";
         }
     }
+    console.log(sen);
     return sen;
 }
 
@@ -573,12 +574,7 @@ function showGraph()
 }
 
 
-function showSentenceGraph()
-{
-    showGraph();
-    //console.log(currentArt.getSentenceString());
-    ajaxGetGraph(currentArt.getSentenceString());
-}
+
 
 function showBoxSentence()
 {
@@ -592,10 +588,17 @@ function forceSentenceGraph(sentence)
     ajaxGetGraph(sentence);
 }
 
+function showSentenceGraph()
+{
+    showGraph();
+    //console.log(currentArt.getSentenceString());
+    ajaxGetGraph(currentArt.getSentenceString());
+}
+
 function showConstructedGraph()
 {
     showGraph();
-    console.log(currentArt.getSentenceConstructionString());
+    
     ajaxGetGraph(currentArt.getSentenceConstructionString());
 }
 
@@ -804,7 +807,7 @@ function addDocumentButtons()
     select1.appendChild(option2);
     select1.appendChild(option3);
 
-    patternButtonNeuralSpan.appendChild(select);
+    //patternButtonNeuralSpan.appendChild(select);
     //patternButtonNeuralSpan.appendChild(select1);
 }
 

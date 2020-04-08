@@ -241,7 +241,6 @@ class SplitText:
                 listOfMatches.append(result)
             if (end - start) > 0.1:
                 break
-        print('Finished patterns')
         if len(listOfMatches) == 0:
             listOfMatches.append(False)
         return listOfMatches

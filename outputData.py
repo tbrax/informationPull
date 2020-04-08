@@ -116,6 +116,15 @@ def displayNeuralResults(art,resultList):
             print('Average of Other sentences',averageOfList(notList))
             #print('Total Average',averageOfList(neuralThere+neuralNot))
 
+
+def writeExtraResult(sentenceList,name):
+    with open('{0}\\{1}'.format(resultFolder,'{0}.txt'.format(name)), "w", encoding="utf-8") as f:
+        for sen in sentenceList:
+            #print(sen)
+            f.write('{0}'.format(sen))
+            f.write('\n')
+
+
 def displayTreeResults(art,resultList):
     for x in resultList:
         if x[0] == art:
@@ -146,14 +155,18 @@ def displayTreeResults(art,resultList):
 
             matchedHand = []
             extraHand = []
+
             matchedResult = []
             extraResult = []
             exactMatch = []
 
             for y in matchHandList:
+                
                 if y[1]:
+                   # print('Found: ', y[2]['SS'])
                     matchedHand.append(y)
                 else:
+                    #print('Not found: ', y[2]['SS'])
                     extraHand.append(y)
 
             for y in matchResultList:
@@ -166,7 +179,7 @@ def displayTreeResults(art,resultList):
             
             print('Tree results for: ',y[0])
             print('Total Hand Picked Values', len(matchHandList))
-            print('Matched: ',len(matchedHand))
+            print('Hand Found: ',len(matchedHand))
             print('Hand Missed: ', len(extraHand))
             
             
@@ -177,8 +190,11 @@ def displayTreeResults(art,resultList):
                     extraNoDuplicates.append(sen)
 
             print('Result Extra: ',len(extraNoDuplicates))
-            for y in extraNoDuplicates:
-                print('"{0}"'.format(y))
+
+            writeExtraResult(extraNoDuplicates,'extraTree')
+
+            #for y in extraNoDuplicates:
+            #    print('"{0}"'.format(y))
 
             print('Exact Matches: ',len(exactMatch))
             for y in exactMatch:
@@ -245,15 +261,16 @@ def displayRegexResults(art,resultList):
                         extraNoDuplicates.append(sen)
 
             print('Result Extra: ',len(extraNoDuplicates))
-            for y in extraNoDuplicates:
+            writeExtraResult(extraNoDuplicates,'extraRegex')
+            #for y in extraNoDuplicates:
                 #False
-                print('"{0}"'.format(y))
+               # print('"{0}"'.format(y))
 
 
 def main(): 
-    art = 'sidewalk'
+    art = 'farm'
     #displayNeuralResults(art,loadFileType('-neural',nameListNeural))
-    #displayTreeResults(art,loadFileType('-tree',nameListTree))
+    displayTreeResults(art,loadFileType('-tree',nameListTree))
     displayRegexResults(art,loadFileType('-regex',nameListRegex))
 
 
