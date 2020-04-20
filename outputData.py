@@ -57,6 +57,14 @@ def loadResultDict(filename,nameList,folder):
     return False
 
 
+def countPatterns():
+    count = 0
+    for name in os.listdir(patternFolder):    
+        patternDictList = loadResultDict(name,nameListPattern,patternFolder)
+        count += len(patternDictList)
+    print(count)
+
+
 def loadFileType(typeName,nameList):
     articleResultList = []
     for filename in os.listdir(resultFolder):    
@@ -79,41 +87,89 @@ def writeFileResult(numList,name):
     
 
 def displayNeuralResults(art,resultList):
-     for x in resultList:
+
+    nnum = 0.9
+
+    for x in resultList:
         if x[0] == art:
             print('TOTAL', len(x[2]))
             matchResultList = []
+            matchHandList = []
             for result in x[1]:
                 match = False
                 for hand in x[2]:
                     sen0 = result['Article Sentence'].replace(' ','')
-                    sen1 = hand['FS'].replace(' ','')
+                    sen1 = hand['SS'].replace(' ','')
                     if (sen0 == sen1):
-                        match = hand
+                        if (float(result.get('Value',0.0)) > nnum):
+                            match = hand
                 #print('Could not find', result['Article Sentence'] )
                 #r0 = result.get('Article Sentence',False)
                 #r1 = result.get('Value',False)
                 matchResultList.append([x[0], result, match])
+            
+            
+
+            for hand in x[2]:
+                match = False
+                for result in x[1]:
+                    sen0 = result['Article Sentence'].replace(' ','')
+                    sen1 = hand['SS'].replace(' ','')
+                    if (sen0 == sen1):
+                        if (float(result.get('Value',0.0)) > nnum):
+                            match = result
+                matchHandList.append([x[0], match, hand])
 
             thereList = []
             notList = []
+            matchedHand = []
+            extraHand = []
+            matchedResult = []
+            extraResult = []
+            for y in matchHandList:
+                if y[1]:
+                   # print('Found: ', y[2]['SS'])
+                    matchedHand.append(y)
+                else:
+                    #print('Not found: ', y[2]['SS'])
+                    extraHand.append(y)
+        
             for y in matchResultList:
                 if y[2]:
                     sen0 = y[1]['Article Sentence']
-                    sen1 = y[2]['FS']
+                    sen1 = y[2]['SS']
                     val = float(y[1]['Value'])
                     thereList.append(val)
+                    matchedResult.append(y)
                 else:
                     sen0 = y[1]['Article Sentence']
                     sen1 = y[2]
                     val = float(y[1]['Value'])
                     notList.append(val)
+                    extraResult.append(y)
 
             writeFileResult(thereList,'there')
             writeFileResult(notList,'not')
             print('Neural results for: ',x[0])
-            print('Average of located sentences',averageOfList(thereList))
-            print('Average of Other sentences',averageOfList(notList))
+            print('Total Hand Picked Values', len(matchHandList))
+            print('Hand Found: ',len(matchedHand))
+            print('Hand Missed: ', len(extraHand))
+
+
+            print('Average NN of located sentences',averageOfList(thereList))
+            print('Average NN of Other sentences',averageOfList(notList))
+
+            extraNoDuplicates = []
+            for y in extraResult:
+                sen = y[1]['Article Sentence']
+                if sen not in extraNoDuplicates:
+                    extraNoDuplicates.append(sen)
+
+            print('Result Extra: ',len(extraNoDuplicates))
+
+            writeExtraResult(extraNoDuplicates,'extraNeural')
+
+
             #print('Total Average',averageOfList(neuralThere+neuralNot))
 
 
@@ -155,7 +211,6 @@ def displayTreeResults(art,resultList):
 
             matchedHand = []
             extraHand = []
-
             matchedResult = []
             extraResult = []
             exactMatch = []
@@ -268,10 +323,11 @@ def displayRegexResults(art,resultList):
 
 
 def main(): 
-    art = 'farm'
+    art = 'snake'
     #displayNeuralResults(art,loadFileType('-neural',nameListNeural))
-    displayTreeResults(art,loadFileType('-tree',nameListTree))
-    displayRegexResults(art,loadFileType('-regex',nameListRegex))
+    #displayTreeResults(art,loadFileType('-tree',nameListTree))
+    #displayRegexResults(art,loadFileType('-regex',nameListRegex))
+    countPatterns()
 
 
    

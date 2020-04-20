@@ -358,7 +358,7 @@ class Chunking:
                 if self.compareTreeSingle(doc0,articleDocs[idx]):
                     resultDict = {
                                         'Article Sentence':x,
-                                        'Short Sentence':y['ShortSentence'],
+                                        'Pattern Sentence':y['ShortSentence'],
                                         } 
                     match = self.exactMatchDoc(doc0,articleDocs[idx])
                     if match:

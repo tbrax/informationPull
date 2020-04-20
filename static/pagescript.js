@@ -109,11 +109,11 @@ loadDisplacy()
 {
     this.displacy = new displaCy('none', {
                                             container: '#selectedGraph',
-                                            distance: 60,
+                                            distance: 70,
                                             offsetX: 16,
-                                            arrowSpacing: 9,
-                                            arrowWidth: 6,
-                                            wordSpacing: 32,
+                                            arrowSpacing: 10,
+                                            arrowWidth: 7,
+                                            wordSpacing: 30,
                                             compact: true,
                                         
                                         })
